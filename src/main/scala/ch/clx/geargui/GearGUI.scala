@@ -222,7 +222,7 @@ object GearGUI extends SimpleSwingApplication {
   def doSabotage() = {
     if (isSimulationRunning) {
 
-      val sabotageList = (0 until nOfGears).map(i => gearCollection(scala.util.Random.nextInt(gearCollection.length)))
+      val sabotageList = (0 until nOfGears).map(i => gearCollection(scala.util.Random.nextInt(gearCollection.length))).filter( _.isRunning)
       saboteur ! Sabotage(sabotageList.toList)
     }
   }
@@ -233,8 +233,8 @@ object GearGUI extends SimpleSwingApplication {
   def doSabotage(gearId: String, toSpeed: Int) = {
     if (isSimulationRunning) {
       gearCollection.find(_.id.equals(gearId)) match {
-        case Some(gear) => saboteur ! SabotageManual(gear, toSpeed)
-        case None => ()
+        case Some(gear) if(gear.isRunning) => saboteur ! SabotageManual(gear, toSpeed)
+        case _ => ()
       }
 
     }
