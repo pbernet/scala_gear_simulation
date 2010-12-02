@@ -4,6 +4,13 @@
     <connections />
   </component>
   <component name="FacetManager">
+    <facet type="scala" name="Scala">
+      <configuration>
+        <option name="compilerLibraryLevel" value="Project" />
+        <option name="compilerLibraryName" value="Maven: org.scala-lang:scala-compiler-bundle:2.8.0" />
+        <option name="vmOptions" value="" />
+      </configuration>
+    </facet>
     <facet type="Scala" name="Scala">
       <configuration>
         <option name="takeFromSettings" value="true" />
@@ -26,8 +33,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.8.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-swing:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-swing:2.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.specs:specs:1.2.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scalatest:scalatest:0.9.1" level="project" />
@@ -35,6 +42,25 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jmock:jmock:2.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-library:1.1" level="project" />
+    <orderEntry type="library" name="Maven: se.scalablesolutions.akka:akka-actor_2.8.0:1.0-M1" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:0.9.24" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:0.9.24" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.fusesource.hawtdispatch:hawtdispatch-scala:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.fusesource.hawtdispatch:hawtdispatch:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.eaio:uuid:3.2" level="project" />
+    <orderEntry type="library" name="Maven: jsr166x:jsr166x:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.multiverse:multiverse-alpha:0.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.multiverse:multiverse-core:0.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.multiverse:multiverse-instrumentation:0.6.1" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-tree:3.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-analysis:3.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-commons:3.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-util:3.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-all:3.2" level="project" />
+    <orderEntry type="library" name="Maven: net.lag:configgy:2.8.0-1.5.5" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-tools:vscaladoc:1.1-md-3" level="project" />
   </component>
 </module>
 

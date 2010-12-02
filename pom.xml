@@ -20,6 +20,29 @@
             <name>Scala-Tools Maven2 Repository - Snapshots</name>
             <url>http://scala-tools.org/repo-snapshots</url>
         </repository>
+        <repository>
+            <id>Akka</id>
+            <name>Akka Maven2 Repository</name>
+            <url>http://www.scalablesolutions.se/akka/repository/</url>
+        </repository>
+
+        <repository>
+            <id>Multiverse</id>
+            <name>Multiverse Maven2 Repository</name>
+            <url>http://multiverse.googlecode.com/svn/maven-repository/releases/</url>
+        </repository>
+
+        <repository>
+            <id>GuiceyFruit</id>
+            <name>GuiceyFruit Maven2 Repository</name>
+            <url>http://guiceyfruit.googlecode.com/svn/repo/releases/</url>
+        </repository>
+
+        <repository>
+            <id>JBoss</id>
+            <name>JBoss Maven2 Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -53,6 +76,12 @@
             <version>1.2.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <artifactId>akka-actor_2.8.0</artifactId>
+            <version>1.0-M1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -76,7 +105,7 @@
                     <mainClass>ch.clx.geargui.GearGUI</mainClass>
                 </configuration>
             </plugin>
-            <plugin>                 
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptorRefs>

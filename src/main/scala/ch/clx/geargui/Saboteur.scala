@@ -9,25 +9,19 @@ package ch.clx.geargui
  * Class: Saboteur
  */
 
-import actors.Actor
-import actors.Actor._
 import collection.mutable.ListBuffer
+import se.scalablesolutions.akka.actor.{ActorRef, Actor}
 
 class Saboteur extends Actor {
-
-   def act = {
-     while(true) {
-       receive {
-         case Sabotage(nGears: ListBuffer[Gear]) => {
-           nGears.foreach{e =>
-             e ! Interrupt(scala.util.Random.nextInt(1000))
-             Thread.sleep(1000)
-           }
-         }
-         case SabotageManual(gear: Gear, toSpeed: Int) => {
-             gear ! Interrupt(toSpeed)
-         }
-       }
-     }
-   }
+  def receive = {
+    case Sabotage(nGears: List[ActorRef]) => {
+      nGears.foreach {
+        e =>
+          e ! Interrupt(scala.util.Random.nextInt(1000))
+      }
+    }
+    case SabotageManual(gear: ActorRef, toSpeed: Int) => {
+      gear ! Interrupt(toSpeed)
+    }
+  }
 }

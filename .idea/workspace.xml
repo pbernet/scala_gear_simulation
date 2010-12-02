@@ -15,17 +15,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="e18d3eaf-1a01-4de6-9cde-14f9a3da117b" name="Default" comment="added a few project-informations">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="DELETED" beforePath="D:\Projekte\scalagears\.idea\libraries\Maven__org_scala_lang_scala_swing_2_8_0_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projekte\scalagears\.idea\libraries\Maven__org_scala_lang_scala_library_2_8_0_SNAPSHOT.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scalagears.iml" afterPath="$PROJECT_DIR$/scalagears.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala" />
+      <change type="DELETED" beforePath="C:\Projekte2\ArchiveBox\scala_gear_simulation\.idea\libraries\Maven__org_scala_lang_scala_swing_2_8_0_SNAPSHOT.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="DELETED" beforePath="C:\Projekte2\ArchiveBox\scala_gear_simulation\.idea\libraries\Maven__org_scala_lang_scala_library_2_8_0_SNAPSHOT.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scalagears.iml" afterPath="$PROJECT_DIR$/scalagears.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala" afterPath="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala" />
+      <change type="DELETED" beforePath="C:\Projekte2\ArchiveBox\scala_gear_simulation\.idea\workspace.xml" afterPath="" />
     </list>
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/" />
     <ignored path="scalagears.iws" />
+    <ignored mask="*.iml" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,46 +88,37 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="28" selection-start="441" selection-end="441" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="31" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GearGUI.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="101" column="53" selection-start="2714" selection-end="2714" vertical-scroll-proportion="0.39556378">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Gear.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="12" selection-start="655" selection-end="655" vertical-scroll-proportion="0.0">
+            <state line="61" column="21" selection-start="1548" selection-end="1548" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GearController.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala">
+      <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="25" selection-start="2379" selection-end="2379" vertical-scroll-proportion="-31.958334">
+            <state line="9" column="0" selection-start="91" selection-end="91" vertical-scroll-proportion="0.31416836">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ThreadPoolBuilder.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/dispatch/ThreadPoolBuilder.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="76" column="0" selection-start="7140" selection-end="7140" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ActorRef.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/actor/ActorRef.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="96" column="6" selection-start="8071" selection-end="8071" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -130,7 +127,43 @@
       <file leaf-file-name="Saboteur.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="240" selection-end="240" vertical-scroll-proportion="0.0">
+            <state line="23" column="7" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GearGUI.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="71" column="24" selection-start="2100" selection-end="2100" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Window.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/Window.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="6" selection-start="1431" selection-end="1431" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainFrame.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/MainFrame.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="3" column="31" selection-start="141" selection-end="157" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MouseReleased.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/event/MouseReleased.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="8" selection-start="8" selection-end="25" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -139,7 +172,7 @@
       <file leaf-file-name="Message.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="14" selection-start="173" selection-end="173" vertical-scroll-proportion="0.0">
+            <state line="21" column="11" selection-start="365" selection-end="365" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -153,20 +186,32 @@
     </FindUsagesManager>
   </component>
   <component name="Git.Settings">
-    <option name="ideaSsh" value="false" />
-    <option name="GIT_EXECUTABLE" value="C:\Git\bin\git.exe" />
+    <option name="GIT_EXECUTABLE" value="C:\Program Files (x86)\Git\bin\git.exe" />
+    <option name="CHECKOUT_INCLUDE_TAGS" value="false" />
     <option name="SSH_EXECUTABLE" value="NATIVE_SSH" />
     <option name="LINE_SEPARATORS_CONVERSION" value="NONE" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala" />
+        <option value="$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.0-RC1/akka-actor-1.0-RC1.pom" />
+        <option value="$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.0-SNAPSHOT/akka-actor-1.0-SNAPSHOT.pom" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
     </option>
   </component>
   <component name="MavenProjectNavigator">
@@ -219,58 +264,45 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Favorites" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="clx" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scalagears" />
+              <option name="myItemId" value="scala_gear_simulation" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -292,8 +324,22 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Favorites" />
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scala_gear_simulation" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scalagears" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -301,7 +347,7 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="com.intellij.openapi.vcs.configurable.VcsManagerConfigurable$4" />
+    <property name="options.lastSelected" value="preferences.sourceCode" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -310,11 +356,33 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
-  <component name="RunManager" selected="Maven.java_16">
+  <component name="RunManager" selected="Application.GearGUI">
+    <configuration default="false" name="GearGUI" type="Application" factoryName="Application" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="snapshooter" />
+      <option name="MAIN_CLASS_NAME" value="ch.clx.geargui.GearGUI" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="scalagears" />
+      <envs />
+      <RunnerSettings RunnerId="Profile ">
+        <option name="myExternalizedOptions" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Profile " />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
     <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
         <option name="myGeneralSettings">
@@ -362,13 +430,6 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -378,14 +439,6 @@
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" air_descriptor_path="" air_program_params="" air_publisher_id="" air_root_dir_path="" air_run_mode="AppDescriptor" class_name="" html_or_swf_file_path="" main_class_name="" method_name="" module_name="" output_log_level="" package_name="" port="0" run_mode="HtmlOrSwfFile" scope="Class" socket_policy_port="0" url_to_launch="http://">
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -520,7 +573,7 @@
             <option name="printErrorStackTraces" value="false" />
             <option name="snapshotUpdatePolicy" value="ALWAYS_UPDATE" />
             <option name="usePluginRegistry" value="false" />
-            <option name="workOffline" value="false" />
+            <option name="workOffline" value="true" />
           </MavenGeneralSettings>
         </option>
         <option name="myRunnerSettings">
@@ -548,13 +601,35 @@
           </MavenRunnerParameters>
         </option>
       </MavenSettings>
+      <RunnerSettings RunnerId="JavaRebel">
+        <option name="bootstrapPath" />
+        <option name="jrebelArgs" value="" />
+        <option name="loggingEnabled" value="false" />
+        <option name="useBootstrapDefaults" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="JavaRebel Debug">
+        <option name="bootstrapPath" />
+        <option name="debugPort" value="49852" />
+        <option name="jrebelArgs" value="" />
+        <option name="loggingEnabled" value="false" />
+        <option name="transport" value="0" />
+        <option name="useBootstrapDefaults" value="true" />
+        <option name="DEBUG_PORT" value="49852" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Profile ">
+        <option name="myExternalizedOptions" value="&#13;&#10;launch-ui=false&#13;&#10;additional-options2=onexit\=snapshot&#13;&#10;" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Profile " />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Maven.java_15" />
-      <item index="1" class="java.lang.String" itemvalue="Maven.java_16" />
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue="Application.GearGUI" />
+      <item index="1" class="java.lang.String" itemvalue="Maven.java_15" />
+      <item index="2" class="java.lang.String" itemvalue="Maven.java_16" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -583,9 +658,10 @@
     <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
     <option name="IGNORE_SPACES_IN_MERGE" value="false" />
     <option name="DETECT_NESTED_COPIES" value="false" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
-    <configuration useDefault="true">C:\Documents and Settings\pmei\Application Data\Subversion</configuration>
+    <configuration useDefault="true">C:\Users\dhob\AppData\Roaming\Subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
@@ -618,28 +694,30 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="136" y="-4" width="1148" height="1032" extended-state="6" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921347" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3297619" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="JavaRebel Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921347" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921347" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="JavaRebel" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921347" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20585544" sideWeight="0.65754926" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2300813" sideWeight="0.66190475" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3293687" sideWeight="0.65754926" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329148" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33479214" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24390244" sideWeight="0.66190475" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33333334" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.40238094" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297619" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329148" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -717,55 +795,84 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.8.0-SNAPSHOT/scala-library-2.8.0-SNAPSHOT-sources.jar!/scala/actors/Actor.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/actor/SupervisorActor.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="731" column="0" selection-start="21166" selection-end="21166" vertical-scroll-proportion="0.33333334" />
+        <state line="1" column="12" selection-start="52" selection-end="52" vertical-scroll-proportion="0.03640257" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/actor/ScalaActorRef.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="31" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0" />
+        <state line="8" column="67" selection-start="515" selection-end="515" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/config/Supervision.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="12" selection-start="655" selection-end="655" vertical-scroll-proportion="0.0" />
+        <state line="75" column="23" selection-start="7195" selection-end="7204" vertical-scroll-proportion="-5.88" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala">
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_21/src.zip!/java/lang/System.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="240" selection-end="240" vertical-scroll-proportion="0.0" />
+        <state line="902" column="23" selection-start="37417" selection-end="37417" vertical-scroll-proportion="0.7687366" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/event/MouseButtonEvent.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="14" selection-start="173" selection-end="173" vertical-scroll-proportion="0.0" />
+        <state line="1" column="39" selection-start="65" selection-end="65" vertical-scroll-proportion="0.03640257" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearController.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="25" selection-start="2379" selection-end="2379" vertical-scroll-proportion="-31.958334">
-          <folding />
-        </state>
+        <state line="166" column="41" selection-start="4508" selection-end="4508" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Gear.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="28" selection-start="441" selection-end="441" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="61" column="21" selection-start="1548" selection-end="1548" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/UIElement.class">
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/dispatch/ThreadPoolBuilder.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="6" selection-start="874" selection-end="874" vertical-scroll-proportion="0.33267328">
-          <folding />
-        </state>
+        <state line="76" column="0" selection-start="7140" selection-end="7140" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor_2.8.0/1.0-M1/akka-actor_2.8.0-1.0-M1.jar!/se/scalablesolutions/akka/actor/ActorRef.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="6" selection-start="8071" selection-end="8071" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Saboteur.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="7" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/GearGUI.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="53" selection-start="2714" selection-end="2714" vertical-scroll-proportion="0.39556378">
+        <state line="71" column="24" selection-start="2100" selection-end="2100" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/Window.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="6" selection-start="1431" selection-end="1431" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/MainFrame.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="31" selection-start="141" selection-end="157" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-swing/2.8.0/scala-swing-2.8.0.jar!/scala/swing/event/MouseReleased.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="8" selection-start="8" selection-end="25" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/ch/clx/geargui/Message.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="11" selection-start="365" selection-end="365" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="0" selection-start="91" selection-end="91" vertical-scroll-proportion="0.31416836">
           <folding />
         </state>
       </provider>
@@ -811,7 +918,13 @@
       <state key="ScopeChooserConfigurable.UI">
         <UIState>
           <splitter-proportions>
-            <SplitterProportionsDataImpl />
+            <SplitterProportionsDataImpl>
+              <option name="proportions">
+                <list>
+                  <option value="0.2" />
+                </list>
+              </option>
+            </SplitterProportionsDataImpl>
           </splitter-proportions>
           <settings />
         </UIState>
