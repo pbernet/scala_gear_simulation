@@ -15,9 +15,11 @@ scala actors to akka actors.
 - Change from scala.actors.Actor to se.scalablesolutions.akka.actor
 - Change type of List / Map and dependencies to ActorRef
 - Change loop / react to receive
+
 ### Fault Tolerance
 - Programmatical linking and supervision of Actors
 - OneForOne strategy (5 Exception in less than 20 seconds)
+
 ### Monitoring
 - YourKit for thread activity
 
