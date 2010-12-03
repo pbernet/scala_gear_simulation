@@ -20,7 +20,7 @@ import actors.Scheduler
 object GearGUI extends SimpleSwingApplication {
 
   //Set manually if you want to have more Gears/Sliders
-  private val nOfGears = 40
+  private val nOfGears = 100
 
   //Needed to track the State of the simulation
   private var nOfSynchGears = 0
@@ -274,6 +274,9 @@ object GearGUI extends SimpleSwingApplication {
       case GiveUp(victimActorRef) => {
         println("[GearGUI] Recieved gear problem - give up!")
         findSlider(victimActorRef.id).background = java.awt.Color.BLACK
+      }
+      case "gearsAmount" => {
+        self.reply(nOfGears)
       }
       case _ => println("[GearGUI] Message could not be evaluated!")
     }

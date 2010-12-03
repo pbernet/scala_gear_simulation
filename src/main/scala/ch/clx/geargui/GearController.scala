@@ -50,7 +50,11 @@ class GearController(guiActor: ActorRef, aName: String) extends Actor {
   }
 
   def init = {
-    for (i <- 0 until 40) {
+    val gearAmount = guiActor.!!("gearsAmount",2000) match {
+        case Some(i: Int) => i
+        case None => 0
+    }
+    for (i <- 0 until gearAmount) {
       val randSpeed = scala.util.Random.nextInt(1000)
       val gearActor = Actor.actorOf(new Gear(i.toString, randSpeed, self))
       gearActor.id = i.toString
