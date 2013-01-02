@@ -1,40 +1,43 @@
 package ch.clx.geargui
 
-/**
- * Created by IntelliJ IDEA.
- * User: pmei
- * Date: 11.02.2010
- * Time: 15:25:25
- * Package: ch.clx.geargui
- * Class: GearGUI
- */
-
 import scala.swing._
-import scala.swing.Swing._
 import collection.mutable.ListBuffer
 import event._
-import se.scalablesolutions.akka.actor.{Actor, ActorRef}
-import se.scalablesolutions.akka.actor.Actor._
-import actors.Scheduler
+import akka.actor.{Actor, ActorRef, Props, ActorSystem}
+import concurrent.Await
+import akka.util.Timeout
+import akka.pattern.ask
+import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
+
 
 object GearGUI extends SimpleSwingApplication {
 
   //Set manually if you want to have more Gears/Sliders
-  private val nOfGears = 100
+  private val nOfGears = 10
 
-  //Needed to track the State of the simulation
+  //Needed to track the state of the simulation
   private var nOfSynchGears = 0
 
-  //This coll serves as a // coll to the internal contents coll. Needed for access to the elements
-  private val sliderCollection = new ListBuffer[GearSlider]
+  var isSimulationRunning = false
 
-  //Actors used for Communication
+  //This coll serves as a shadow coll to the internal contents coll. Needed for access to the elements
+  private var sliderCollection = new ListBuffer[GearSlider]
+
+
+  val config = ConfigFactory.parseString("""
+  akka.loglevel = DEBUG
+  akka.actor.debug {
+  receive = on
+  lifecycle = on
+  }
+                                         """)
+  val system = ActorSystem("MySystem", config)
+
   private var gearController: ActorRef = null
   private var saboteur: ActorRef = null
+  private var guiActor: ActorRef = null
 
-  //ForkJoinScheduler is default
-  var isForkJoinScheduler: Boolean = true
-  var schedulerName: String = "forkJoinScheduler"
 
   /**
    * Setup all GUI components here
@@ -43,46 +46,40 @@ object GearGUI extends SimpleSwingApplication {
   object startButton extends Button {text = "Start"}
   object sabotageButton extends Button {text = "Sabotage"}
   object progressBar extends ProgressBar {labelPainted = true; max = nOfGears; value = 0}
-  object calculatedSpeedLabel extends Label {text = "Calculated speed"}
+  object calculatedSpeedLabel extends Label {text = "Calculated sync speed"}
   object calculatedSpeedTextField extends TextField {text = "0"; columns = 3}
 
+  val startMenuItem = new MenuItem(Action("Start") {
+    startSimulation
+  })
+
+  val randomSabotageMenuItem = new MenuItem(Action("Random sabotage n Gears") {
+    if (isSimulationRunning) {
+      doSabotage()
+    }
+  })
 
   def top = new MainFrame {
 
-
-    /**
-     * Set properties for mainframe
-     */
-    title = "A simulation of gears using actors and scala-swing in Scala 2.8"
+    title = "A simulation of gears using akka-actors and scala-swing in Scala 2.10"
     preferredSize = new java.awt.Dimension(1200, 500)
 
     menuBar = new MenuBar {
       contents += new Menu("File") {
         contents += new MenuItem(Action("Quit") {
-          cleanup
-          dispose
+          cleanup()
+          close()
+          System.exit(0)
         })
       }
       contents += new Menu("Control") {
-        contents += new MenuItem(Action("Start") {
-          startSimulation
-        })
-        contents += new MenuItem(Action("Random sabotage n Gears") {
-          if (isSimulationRunning) {
-            doSabotage()
-          }
-        })
+        contents += startMenuItem
+        contents += randomSabotageMenuItem
       }
     }
 
-    /**
-     * Start with setting up the gui
-     */
     contents = new SplitPane {
 
-      /**
-       * Initial properties for SplitPane
-       */
       dividerLocation = 250
       dividerSize = 8
       oneTouchExpandable = true
@@ -94,6 +91,7 @@ object GearGUI extends SimpleSwingApplication {
       val buttonPanel = new FlowPanel {
         preferredSize = new java.awt.Dimension(200, 0)
         contents += startButton
+        sabotageButton.enabled = false
         contents += sabotageButton
         contents += calculatedSpeedLabel
         contents += calculatedSpeedTextField
@@ -114,7 +112,6 @@ object GearGUI extends SimpleSwingApplication {
             majorTickSpacing = 100
             //must be set to true, otherwise the background color does not show
             opaque = true
-            sliderId = i.toString
           }
           contents += slider
           sliderCollection += slider
@@ -131,7 +128,7 @@ object GearGUI extends SimpleSwingApplication {
     }
 
     /**
-     * Define listener and patterns for GUI-eventmatching
+     * Define listener and patterns for GUI-Eventmatching
      */
     listenTo(startButton)
     listenTo(sabotageButton)
@@ -143,7 +140,7 @@ object GearGUI extends SimpleSwingApplication {
         startSimulation
       case ButtonClicked(`sabotageButton`) =>
         println("[GearGUI] Sabotage")
-        doSabotage();
+        doSabotage()
       case MouseReleased(slider: GearSlider, _, _, 2, _) =>
         if (slider.background == java.awt.Color.BLACK) {
           revive(slider.sliderId)
@@ -156,21 +153,20 @@ object GearGUI extends SimpleSwingApplication {
     }
   }
 
-  def startSimulation = {
+  def startSimulation: Unit = {
     println("[GearGUI] starting new simulation")
 
-    saboteur = Actor.actorOf[Saboteur]
-    saboteur.start()
+    isSimulationRunning = true
 
-    val guiActor = receiver
-    guiActor.start //stopped in GearController
+    saboteur = system.actorOf(Props[Saboteur], name = "Saboteur")
 
-    gearController = Actor.actorOf(new GearController(guiActor, schedulerName))
-    gearController.start()
+    guiActor = createReceiverActor
 
+    gearController = system.actorOf(Props(new GearController(guiActor)), name = "GearController")
     gearController ! StartSync
 
     startButton.enabled = false
+    startMenuItem.enabled = false
 
   }
 
@@ -178,11 +174,13 @@ object GearGUI extends SimpleSwingApplication {
     //needed if the simulation is started n times
     if (gearController != null) {
       gearController ! CleanUp
+      system.stop(gearController)
       gearController = null
+      system.stop(guiActor)
     }
 
     if (saboteur != null) {
-      saboteur.stop
+      system.stop(saboteur)
       saboteur = null
     }
 
@@ -190,27 +188,40 @@ object GearGUI extends SimpleSwingApplication {
     nOfSynchGears = 0
   }
 
-  def isSimulationRunning = nOfSynchGears > 0 && nOfSynchGears < nOfGears
 
-  def handleStartButton() = {
+  def handleControls() = {
     if (isSimulationRunning) {
       startButton.enabled = false
+      startMenuItem.enabled = false
+      sabotageButton.enabled = true
+      randomSabotageMenuItem.enabled = true
+
     } else {
       cleanup()
       startButton.enabled = true
+      startMenuItem.enabled = true
+      sabotageButton.enabled = false
+      randomSabotageMenuItem.enabled = false
     }
   }
 
-  def gearCollection: ListBuffer[ActorRef] = gearController.!!(GetGears) match {
-    case Some(gears: ListBuffer[ActorRef]) => gears
-    case None => ListBuffer()
+  def gearCollection: ListBuffer[ActorRef] = {
+
+    //http://doc.akka.io/docs/akka/2.0.3/scala/futures.html
+    implicit val timeout = Timeout(5 seconds)
+    val future = gearController ? GetGears // enabled by the “ask” import
+    Await.result(future, timeout.duration).asInstanceOf[ListBuffer[ActorRef]] match {
+      case gears: ListBuffer[ActorRef] => gears
+      case _ => ListBuffer[ActorRef]()
+    }
   }
 
   /**
    * Revive if possible
+   * TODO
    */
-  def revive(gearId: String) = {
-    gearCollection.find(_.id.equals(gearId)) match {
+  def revive(ref: String) = {
+    gearCollection.find(_.path == ref) match {
       case Some(gear) => gearController ! Revive(gear)
       case None => ()
     }
@@ -221,8 +232,8 @@ object GearGUI extends SimpleSwingApplication {
    */
   def doSabotage() = {
     if (isSimulationRunning) {
-
-      val sabotageList = (0 until nOfGears).map(i => gearCollection(scala.util.Random.nextInt(gearCollection.length))).filter( _.isRunning)
+      println("Random sabotage entered")
+      val sabotageList = (0 until nOfGears).map(i => gearCollection(scala.util.Random.nextInt(gearCollection.length))).filterNot( _.isTerminated)
       saboteur ! Sabotage(sabotageList.toList)
     }
   }
@@ -230,10 +241,11 @@ object GearGUI extends SimpleSwingApplication {
   /**
    * Do sabotage one Gear (choosen via the Slider)
    */
-  def doSabotage(gearId: String, toSpeed: Int) = {
+  def doSabotage(ref: String, toSpeed: Int) = {
     if (isSimulationRunning) {
-      gearCollection.find(_.id.equals(gearId)) match {
-        case Some(gear) if(gear.isRunning) => saboteur ! SabotageManual(gear, toSpeed)
+      println("Manual sabotage enterend for ref: " + ref + " with new Speed: " + toSpeed)
+      gearCollection.find(_.actorRef.path.toString == ref) match {
+        case Some(gear) if(!gear.isTerminated) => saboteur ! SabotageManual(gear, toSpeed)
         case _ => ()
       }
 
@@ -241,53 +253,63 @@ object GearGUI extends SimpleSwingApplication {
   }
 
   /**
-   * Define the actor/API for this GUI
+   * http://doc.akka.io/docs/akka/2.0.3/scala/actors.html#actors-scala
+   * TODO See if warning "Creating Actors using anonymous classes" applies here
    */
-
-  def receiver = Actor.actorOf(new Actor {
+  //
+  def createReceiverActor = system.actorOf(Props(new Actor {
+    println("Initialize GUIActor")
     def receive = {
-      case CurrentSpeed(gearId: String, speed: Int) =>
+      case CurrentSpeedGUI(ref: String, speed: Int) =>
         //println("[GearGUI] (" + gearId + ")] SetSpeed to newSpeed: " + speed)
-        findSlider(gearId).value = speed
-        if (findSlider(gearId).background != java.awt.Color.RED) {
-          findSlider(gearId).background = java.awt.Color.YELLOW
+        findSlider(ref).value = speed
+        if (findSlider(ref).background != java.awt.Color.RED) {
+          findSlider(ref).background = java.awt.Color.YELLOW
         }
-      case GearProblem(gearId: String) =>
+      case GearProblem(ref: String) =>
         println("[GearGUI] Recieved gear problem - due to Sabotage!")
-        findSlider(gearId).background = java.awt.Color.RED
+        findSlider(ref).background = java.awt.Color.RED
       case Progress(numberOfSyncGears: Int) =>
         println("[GearGUI] Progress: " + numberOfSyncGears)
         progressBar.value = numberOfSyncGears
         nOfSynchGears = numberOfSyncGears
-        handleStartButton()
+        if (nOfSynchGears == nOfGears) isSimulationRunning = false else isSimulationRunning = true
+        handleControls()
 
-      case ReceivedSpeed(gearId: String) =>
-        println("[GearGUI] ReceivedSpeed gearId: " + gearId)
-        findSlider(gearId).background = java.awt.Color.GREEN
+      case ReceivedSpeedGUI(ref: String) =>
+        println("[GearGUI] ReceivedSpeedGUI ref: " + ref)
+        findSlider(ref).background = java.awt.Color.GREEN
       case SetCalculatedSyncSpeed(syncSpeed: Int) =>
         println("[GearGUI] SetCalculatedSyncSpeed syncSpeed: " + syncSpeed)
         calculatedSpeedTextField.text = syncSpeed.toString
       case Crashed(gearActor) => {
         println("[GearGUI] Recieved gear problem - due to Exception!")
-        findSlider(gearActor.id).background = java.awt.Color.MAGENTA
+        findSlider(gearActor.path.toString).background = java.awt.Color.MAGENTA
       }
-      case GiveUp(victimActorRef) => {
+      case GiveUp(ref: String) => {
         println("[GearGUI] Recieved gear problem - give up!")
-        findSlider(victimActorRef.id).background = java.awt.Color.BLACK
+        findSlider(ref).background = java.awt.Color.BLACK
       }
-      case "gearsAmount" => {
-        self.reply(nOfGears)
+      case GearsAmount(amount: Int) => {
+        println("[GearGUI] Recieved GearsAmount")
+        sender ! nOfGears
+      }
+     case AllGears(allPaths: List[String])=> {
+        val zippedCol =  sliderCollection zip allPaths
+        sliderCollection = zippedCol.collect{
+          case(gearSlider ,path) => gearSlider.sliderId = path ; gearSlider
+        }
       }
       case _ => println("[GearGUI] Message could not be evaluated!")
     }
-  })
+  }))
 
-  def findSlider(gearId: String) = {
-    sliderCollection.find(_.sliderId == gearId).get
+  def findSlider(path: String) = {
+    sliderCollection.find(_.sliderId == path).get
   }
 }
 
 
 class GearSlider extends Slider {
-  var sliderId: String = "";
+  var sliderId: String = _
 }

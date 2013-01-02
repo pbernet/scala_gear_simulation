@@ -1,37 +1,33 @@
 package ch.clx.geargui
 
-/**
- * Created by IntelliJ IDEA.
- * User: pmei
- * Date: 11.02.2010
- * Time: 15:23:29
- * Package: ch.clx.geargui
- * Class: GearController
- */
-
 import collection.mutable.ListBuffer
 import scala.math.{max, min}
-import se.scalablesolutions.akka.config.Supervision.OneForOneStrategy
-import se.scalablesolutions.akka.actor.{MaximumNumberOfRestartsWithinTimeRangeReached, Actor, ActorRef}
+import akka.actor._
+import akka.actor.SupervisorStrategy.{Stop, Restart, Resume}
+import concurrent.Await
+import akka.util.Timeout
+import akka.pattern.ask
+import scala.concurrent.duration._
 
-class GearController(guiActor: ActorRef, aName: String) extends Actor {
+
+class GearController(guiActor: ActorRef) extends Actor {
 
   /**
-   *  Let it crash model
-   *  - Just restart the crashed actor (OneForOne)
-   *  - Give up reviving if 5 exceptions occurs from one actor within 2 seconds
+   * Let it crash model
+   * - Restart the crashed actor (OneForOne)
+   * - Give up if 2 exceptions occurs from one actor within 2 seconds
    */
-  self.faultHandler =
-          OneForOneStrategy(
-            List(classOf[Throwable]),
-            Some(5),
-            Some(20000)
-            )
 
-  private var syncGears = new ListBuffer[String]
+  override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 2 seconds) {
+    case _: ArithmeticException => Resume
+    case _: NullPointerException => Restart
+    case _: IllegalArgumentException => Stop
+    case _: RuntimeException => Restart
+  }
+
+  private var syncGears = new ListBuffer[ActorRef]
   private var syncSpeed = 0
 
-  val schedulerName = aName
   val rt = Runtime.getRuntime
   val startTime = System.nanoTime
   var maxThreads = totalThreads
@@ -50,24 +46,27 @@ class GearController(guiActor: ActorRef, aName: String) extends Actor {
   }
 
   def init = {
-    val gearAmount = guiActor.!!("gearsAmount",2000) match {
-        case Some(i: Int) => i
-        case None => 0
-    }
+    //http://doc.akka.io/docs/akka/snapshot/scala/futures.html
+    implicit val timeout = Timeout(5 seconds)
+    val future = guiActor ? GearsAmount(2000) // enabled by the “ask” import
+    val gearAmount = Await.result(future, timeout.duration).asInstanceOf[Int]
+
+
     for (i <- 0 until gearAmount) {
-      val randSpeed = scala.util.Random.nextInt(1000)
-      val gearActor = Actor.actorOf(new Gear(i.toString, randSpeed, self))
-      gearActor.id = i.toString
-      someSelf match {
-        case Some(ref: ActorRef) => {
-          println("Registered gear: " + gearActor.id)
-          ref.startLink(gearActor)
-        }
-      }
-      //Add to stateMap
-      stateMap += (gearActor.id -> randSpeed)
-      gearColl += gearActor
+      val child = createGear(i)
+      //registration for "Lifecycle Monitoring aka DeathWatch"
+      //http://doc.akka.io/docs/akka/snapshot/scala/actors.html
+      context.watch(child)
     }
+  }
+
+
+  private def createGear(id: Int): ActorRef = {
+    val randSpeed = scala.util.Random.nextInt(1000)
+    val gearActor = context.actorOf(Props(new Gear(id, randSpeed, self)), name = "Gear" + id.toString())
+    stateMap += (gearActor.path.toString -> randSpeed)
+    gearColl += gearActor
+    gearActor
   }
 
   def receive = {
@@ -81,99 +80,93 @@ class GearController(guiActor: ActorRef, aName: String) extends Actor {
 
       var speeds = new ListBuffer[Int]
       gearCollection.foreach(e => {
-        val gearSpeed = e.!!(GetSpeed, 2000) match {
-          case Some(i: Int) => i
-          case None => 0
-        }
+
+        implicit val timeout = Timeout(5 seconds)
+        val future = e ? GetSpeed // enabled by the “ask” import
+        val gearSpeed = Await.result(future, timeout.duration).asInstanceOf[Int]
+
         speeds += gearSpeed
       })
 
-      //Calc avg
       syncSpeed = (0 /: speeds)(_ + _) / speeds.length //Average over all gear speeds
       guiActor ! SetCalculatedSyncSpeed(syncSpeed)
 
       println("[Controller] calculated syncSpeed: " + syncSpeed)
+      guiActor ! AllGears((gearCollection.map(_.path.toString)).toList)
       gearCollection.foreach(_ ! SyncGear(syncSpeed))
-
       println("[Controller] started all gears")
     }
     case ReSync(gearActor) => {
-      val oldSpeed = stateMap.get(gearActor.id).getOrElse(0)
+      val oldSpeed = stateMap.get(gearActor.path.toString).getOrElse(0)
       gearActor ! SyncGearRestart(syncSpeed, oldSpeed)
     }
     case crashed@Crashed(gearActor) => {
       //forward does the same as !, but will pass the original sender
       guiActor forward crashed
     }
-    case ReceivedSpeed(gearId: String) => {
-      println("[Controller] Syncspeed received by a gear (" + gearId + ")")
-      syncGears += gearId
+    case ReceivedSpeed(ref: ActorRef) => {
+      println("[Controller] Syncspeed received by a gear (" + ref + ")")
+      syncGears += ref
 
-      /**
-       *  Notify the gui
-       */
-      guiActor ! ReceivedSpeed(gearId)
+      guiActor ! ReceivedSpeedGUI(ref.path.toString)
       guiActor ! Progress(syncGears.length)
 
       endResult
     }
 
-    case CurrentSpeed(gearId: String, speed: Int) => {
+    case CurrentSpeed(ref: String, speed: Int) => {
       //println("[GearController] gear(" + gearId + ") currentSpeed: " + speed)
-      // Update map
-      stateMap += (gearId -> speed) //overwrite key
-      //Tell gui actor
-      guiActor ! CurrentSpeed(gearId, speed)
+
+      stateMap += (ref -> speed) //overwrite key
+      guiActor ! CurrentSpeedGUI(ref, speed)
     }
 
     case ReportInterrupt => {
-      self.sender match {
-        case Some(actor) => {
-          if (syncGears.contains(actor.id)) {
-            syncGears -= actor.id;
+      sender match {
+        case actor: ActorRef => {
+          if (syncGears.contains(actor)) {
+            syncGears -= actor
             actor ! SyncGear(syncSpeed)
           }
 
-          /**
-           * Notify the gui
-           */
-          guiActor ! GearProblem(actor.getId)
+          guiActor ! GearProblem(actor.path.toString)
           guiActor ! Progress(syncGears.length)
         }
-        case None => ()
+        case _ => ()
       }
-
-
     }
     case GetGears => {
-      self.reply(gearCollection)
+      sender ! this.gearCollection
     }
+
+    case CleanUp => {
+      context.children foreach (context.stop(_))
+      resetGearCollection
+    }
+
     case Revive(gear) => {
       // Can't restart an actor that has been shut down with 'stop' or 'exit'
-      // create new one 
-      val gearActor = Actor.actorOf(new Gear(gear.id, stateMap.get(gear.id).getOrElse(0), self))
-      gearActor.id = gear.id
-      someSelf.get.startLink(gearActor)
+      // create new one
+      println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
+      val originalID = gear.path.toString().split("/").last.replace("Gear", "").toInt
+      val child = createGear(originalID)
+      context.watch(child)
+
       //replace old actor for new in list
       gearColl -= gear
-      gearColl += gearActor
-      //now do a resync
-      self ! ReSync(gearActor)
+      gearColl += child
+
+      self ! ReSync(child)
     }
-    case CleanUp => {
-      gearColl.foreach(gear => {
-        gear.stop
-        someSelf.get.unlink(gear)
-      })
-      someSelf.get.stop
-      guiActor.stop
-      gearColl = null
+
+    case t@Terminated(child) => {
+
+      println("Terminated recieved for child: " + child.path.toString() + " Dead: " + t.getExistenceConfirmed())
+      guiActor ! GiveUp(child.path.toString)
+      Thread.sleep(5000) //death time so GUI is visible
+      self ! Revive(child)
     }
-    case MaximumNumberOfRestartsWithinTimeRangeReached(
-    victimActorRef, maxNrOfRetries, withinTimeRange, lastExceptionCausingRestart) => {
-      println("Giving up gear with id: " + victimActorRef.id)
-      guiActor ! GiveUp(victimActorRef)
-    }
+
     case _ => println("[Controller] No match :(")
 
   }
@@ -200,7 +193,6 @@ class GearController(guiActor: ActorRef, aName: String) extends Actor {
     def pp(name: String) = pf(name + ": " + props.getProperty(name))
 
     pf("****Microbenchmark****")
-    pf("Scheduler: " + schedulerName)
     pf("# of Cores: " + rt.availableProcessors.toString)
     pp("java.vm.name") // e.g. Java HotSpot(TM) 64-Bit Server VM
     pp("java.vm.version") // e.g. 16.3-b01-279
@@ -220,7 +212,7 @@ class GearController(guiActor: ActorRef, aName: String) extends Actor {
 
   def totalThreads = {
     def rec(tg: ThreadGroup): Int = if (tg.getParent eq null) tg.activeCount else rec(tg.getParent)
-    rec(currentThread.getThreadGroup)
+    rec(Thread.currentThread.getThreadGroup)
   }
 
 

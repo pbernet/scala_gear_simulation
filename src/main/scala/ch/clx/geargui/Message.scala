@@ -1,19 +1,7 @@
 package ch.clx.geargui
 
-
-/**
- * Created by IntelliJ IDEA.
- * User: pmei
- * Date: 11.02.2010
- * Time: 15:20:44
- * Package: ch.clx.geargui
- * Class: Message
- */
-// test commit
-
-import actors.Actor
+import akka.actor._
 import collection.mutable.ListBuffer
-import se.scalablesolutions.akka.actor.ActorRef
 
 abstract class Message
 
@@ -27,19 +15,23 @@ case class Interrupt(toSpeed: Int) extends Message
 case class GetSpeed extends Message
 
 //controller API
-case class CurrentSpeed(gearId: String, speed: Int) extends Message  //Used in GUI too
-case class ReceivedSpeed(gearId: String) extends Message //Used in GUI too
+case class CurrentSpeed(ref : String, speed: Int) extends Message
+case class ReceivedSpeed(actorRef : ActorRef) extends Message
 case class ReportInterrupt extends Message
 case class GetGears extends Message
 case class CleanUp extends Message
-case class Revive(gear : ActorRef) extends Message
+case class Revive(gearActor : ActorRef) extends Message
+case class GearsAmount(default: Int) extends Message
 
 //GUI API
 case class Progress(numberOfSyncGears: Int) extends Message
 case class SetCalculatedSyncSpeed(syncSpeed: Int) extends Message
-case class GearProblem(gearId: String) extends Message
-case class GiveUp(victimActorRef : ActorRef) extends Message
+case class GearProblem(ref : String) extends Message
+case class GiveUp(victimActorRef : String) extends Message
+case class AllGears(allGears: List[String]) extends Message
+case class ReceivedSpeedGUI(ref: String) extends Message
+case class CurrentSpeedGUI(ref : String, speed: Int) extends Message
 
 //saboteur API
 case class Sabotage(nGears: List[ActorRef]) extends Message
-case class SabotageManual(gear: ActorRef, toSpeed: Int) extends Message
+case class SabotageManual(gearActor : ActorRef, toSpeed: Int) extends Message

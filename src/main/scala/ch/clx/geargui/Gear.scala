@@ -1,29 +1,17 @@
 package ch.clx.geargui
 
-import se.scalablesolutions.akka.actor.{Scheduler, ActorRef, Actor}
-import java.util.concurrent.TimeUnit
-import se.scalablesolutions.akka.config.Supervision
 
-/**
- * Created by IntelliJ IDEA.
- * User: pmei
- * Date: 11.02.2010
- * Time: 15:22:35
- * Package: ch.clx.geargui
- * Class: Gear
- */
+import akka.actor._
+import scala.concurrent.duration._
+// for implicit execution context
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class Gear(id: String, mySpeed : Int, controller: ActorRef) extends Actor {
-  /**
-   * Let it crash
-   */
-  self.lifeCycle = Supervision.Permanent
+
+class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
   var speed = mySpeed
-
   def gearId = id
 
-  /* Constructor */
   println("[Gear (" + id + ")] created with speed: " + mySpeed)
 
   def receive = {
@@ -31,17 +19,20 @@ class Gear(id: String, mySpeed : Int, controller: ActorRef) extends Actor {
 
       //println("[Gear ("+id+")] activated, try to follow controller command (form mySpeed ("+mySpeed+") to syncspeed ("+syncSpeed+")")
 
+      // Throw NPE and/or RuntimeEx - these sliders are marked MARGENTA in the GUI
+      if (math.random < 0.01) {
+        throw new NullPointerException
+      }
       if (math.random < 0.01) {
         throw new RuntimeException
       }
-
-      
-      controller ! CurrentSpeed(self.id, speed)
+      Thread.sleep(100)
+      controller ! CurrentSpeed(self.path.toString, speed)
       adjustSpeedTo(syncSpeed)
     }
-    case SyncGearRestart(syncSpeed,oldSpeed) => {
+    case SyncGearRestart(syncSpeed, oldSpeed) => {
       speed = oldSpeed
-      controller ! CurrentSpeed(self.id, speed)
+      controller ! CurrentSpeed(self.path.toString, speed)
       adjustSpeedTo(syncSpeed)
     }
     case Interrupt(toSpeed: Int) => {
@@ -50,41 +41,45 @@ class Gear(id: String, mySpeed : Int, controller: ActorRef) extends Actor {
       controller ! ReportInterrupt
     }
     case GetSpeed => {
-      self.reply(speed)
+      sender ! speed
     }
     case _ => {
-      println("[Gear (" + self.id + ")] match error")
+      println("[Gear (" + self.path.toString() + ")] match error")
     }
   }
 
   def adjustSpeedTo(targetSpeed: Int) = {
-    //println("Gear "+self.id+" is adjusting speed")
+
+    //println("Gear "+self.path.toString()+" is adjusting speed")
     if (targetSpeed > speed) {
       speed += 1
-      Scheduler.scheduleOnce(self, SyncGear(targetSpeed), 50, TimeUnit.MILLISECONDS)
+      self ! SyncGear(targetSpeed)
     } else if (targetSpeed < speed) {
       speed -= 1
-      Scheduler.scheduleOnce(self, SyncGear(targetSpeed), 50, TimeUnit.MILLISECONDS)
+      self ! SyncGear(targetSpeed)
     } else if (targetSpeed == speed) {
       callController
     }
-
   }
 
   def callController = {
     println("[Gear (" + id + ")] has syncSpeed")
-    controller ! ReceivedSpeed(self.id)
+    controller ! ReceivedSpeed(self)
   }
 
   /**
-   * Fault tolerance
+   * Lifecycle methods
    */
-  override def preRestart(reason: Throwable) {
+  override def preRestart(reason: Throwable, message: Option[Any]) {
+    println("preRestart recieved: " + self.path + " reason: " + reason + " message: " + message.getOrElse(""))
     controller ! Crashed(self)
   }
 
   override def postRestart(reason: Throwable) {
-    self.id = id
-    Scheduler.scheduleOnce(controller, ReSync(self), 500, TimeUnit.MILLISECONDS)
+    println("postRestart recieved: " + self.path)
+
+    context.system.scheduler.scheduleOnce(500 milliseconds) {
+      controller ! ReSync(self)
+    }
   }
 }
