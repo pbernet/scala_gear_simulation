@@ -26,7 +26,7 @@ class GearController(guiActor: ActorRef) extends Actor {
   }
 
   private var gearColl = new ListBuffer[ActorRef]
-  private val syncGears = new ListBuffer[ActorRef]
+  private var syncGears = new ListBuffer[ActorRef]
   private var syncSpeed = 0
 
   val rt = Runtime.getRuntime
