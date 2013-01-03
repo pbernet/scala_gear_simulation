@@ -33,5 +33,5 @@ A simulation of syncing gears using akka-actors (2.1.0) and scala-swing with Sca
 - Minor enhancements to the GUI
 
 
-### Monitoring
+## Monitoring
 - YourKit for thread activity
