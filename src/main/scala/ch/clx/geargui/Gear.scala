@@ -11,6 +11,7 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
   var speed = mySpeed
   def gearId = id
+  val failureLevel = 0.02 //raise to get more
 
   println("[Gear (" + id + ")] created with speed: " + mySpeed)
 
@@ -19,11 +20,11 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
       //println("[Gear ("+id+")] activated, try to follow controller command (form mySpeed ("+mySpeed+") to syncspeed ("+syncSpeed+")")
 
-      // Throw NPE and/or RuntimeEx - these sliders are marked MARGENTA in the GUI
-      if (math.random < 0.01) {
+      // Throw NPE and/or RuntimeEx - these sliders are marked magenta in the GUI
+      if (math.random < failureLevel) {
         throw new NullPointerException
       }
-      if (math.random < 0.01) {
+      if (math.random < failureLevel) {
         throw new RuntimeException
       }
       Thread.sleep(100)
