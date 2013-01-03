@@ -14,7 +14,7 @@ A simulation of syncing gears using akka-actors (2.1.0) and scala-swing with Sca
 - yellow: Gear in progress
 - red: Gear has been sabotaged (= a new speed was forced)
 - magenta: Gear had an exception and is restarted by the supervisor
-- black: Gear had 2 exceptions within 2 seconds (double click to revive, or wait 10 seconds)
+- black: Gear had 2 exceptions within 2 seconds (double click to revive)
 
 ### ...the parameters in the code:
 - GearGUI nOfGears (increase if you want to have more gears)
