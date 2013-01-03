@@ -25,7 +25,8 @@ class GearController(guiActor: ActorRef) extends Actor {
     case _: RuntimeException => Restart
   }
 
-  private var syncGears = new ListBuffer[ActorRef]
+  private var gearColl = new ListBuffer[ActorRef]
+  private val syncGears = new ListBuffer[ActorRef]
   private var syncSpeed = 0
 
   val rt = Runtime.getRuntime
@@ -33,7 +34,6 @@ class GearController(guiActor: ActorRef) extends Actor {
   var maxThreads = totalThreads
   var minFree = rt.freeMemory
   var maxTotal = rt.totalMemory
-  var gearColl: ListBuffer[ActorRef] = ListBuffer()
 
   var stateMap: Map[String, Int] = Map()
 
@@ -42,7 +42,7 @@ class GearController(guiActor: ActorRef) extends Actor {
   }
 
   def resetGearCollection = {
-    gearColl = ListBuffer()
+    gearColl = new ListBuffer[ActorRef]
   }
 
   def init = {
@@ -54,6 +54,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
     for (i <- 0 until gearAmount) {
       val child = createGear(i)
+      gearColl += child
       //registration for "Lifecycle Monitoring aka DeathWatch"
       //http://doc.akka.io/docs/akka/snapshot/scala/actors.html
       context.watch(child)
@@ -65,7 +66,6 @@ class GearController(guiActor: ActorRef) extends Actor {
     val randSpeed = scala.util.Random.nextInt(1000)
     val gearActor = context.actorOf(Props(new Gear(id, randSpeed, self)), name = "Gear" + id.toString())
     stateMap += (gearActor.path.toString -> randSpeed)
-    gearColl += gearActor
     gearActor
   }
 
@@ -73,10 +73,7 @@ class GearController(guiActor: ActorRef) extends Actor {
     case StartSync => {
       println("[Controller] Send commands for syncing to gears!")
 
-      gearColl.isEmpty match {
-        case true => init
-        case false => ()
-      }
+      if (gearColl.isEmpty) init
 
       var speeds = new ListBuffer[Int]
       gearCollection.foreach(e => {
@@ -145,14 +142,15 @@ class GearController(guiActor: ActorRef) extends Actor {
     }
 
     case Revive(gear) => {
-      // Can't restart an actor that has been shut down with 'stop' or 'exit'
-      // create new one
+      // Can't restart an actor that has been terminated - create new one
+      // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
       println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
       val originalID = gear.path.toString().split("/").last.replace("Gear", "").toInt
       val child = createGear(originalID)
+
+      context.unwatch(gear)
       context.watch(child)
 
-      //replace old actor for new in list
       gearColl -= gear
       gearColl += child
 
@@ -163,8 +161,6 @@ class GearController(guiActor: ActorRef) extends Actor {
 
       println("Terminated recieved for child: " + child.path.toString() + " Dead: " + t.getExistenceConfirmed())
       guiActor ! GiveUp(child.path.toString)
-      Thread.sleep(10000) //death time so it is visible in GUI
-      self ! Revive(child)
     }
 
     case _ => println("[Controller] No match :(")
