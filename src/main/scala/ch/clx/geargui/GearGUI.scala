@@ -217,11 +217,11 @@ object GearGUI extends SimpleSwingApplication {
   }
 
   /**
-   * Revive if possible
-   * TODO
+   * Revive triggered manually from gui
    */
   def revive(ref: String) = {
-    gearCollection.find(_.path == ref) match {
+    println("Revive entered via gui with ref: " + ref)
+    gearCollection.find(_.actorRef.path.toString == ref) match {
       case Some(gear) => gearController ! Revive(gear)
       case None => ()
     }
@@ -239,7 +239,7 @@ object GearGUI extends SimpleSwingApplication {
   }
 
   /**
-   * Do sabotage one Gear (choosen via the Slider)
+   * Do sabotage one Gear (chosen via the Slider)
    */
   def doSabotage(ref: String, toSpeed: Int) = {
     if (isSimulationRunning) {
