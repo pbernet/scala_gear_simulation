@@ -163,7 +163,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
       println("Terminated recieved for child: " + child.path.toString() + " Dead: " + t.getExistenceConfirmed())
       guiActor ! GiveUp(child.path.toString)
-      Thread.sleep(5000) //death time so GUI is visible
+      Thread.sleep(10000) //death time so it is visible in GUI
       self ! Revive(child)
     }
 
