@@ -18,7 +18,7 @@ class GearController(guiActor: ActorRef) extends Actor {
    * - Give up if 2 exceptions occurs from one actor within 2 seconds
    */
 
-  override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 2 seconds) {
+  override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 2.seconds) {
     case _: ArithmeticException => Resume
     case _: NullPointerException => Restart
     case _: IllegalArgumentException => Stop
@@ -41,11 +41,11 @@ class GearController(guiActor: ActorRef) extends Actor {
     gearColl
   }
 
-  def resetGearCollection = {
+  def resetGearCollection() {
     gearColl = new ListBuffer[ActorRef]
   }
 
-  def init = {
+  def init() {
     //http://doc.akka.io/docs/akka/snapshot/scala/futures.html
     implicit val timeout = Timeout(5 seconds)
     val future = guiActor ? GearsAmount(2000) // enabled by the “ask” import
@@ -64,7 +64,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
   private def createGear(id: Int): ActorRef = {
     val randSpeed = scala.util.Random.nextInt(1000)
-    val gearActor = context.actorOf(Props(new Gear(id, randSpeed, self)), name = "Gear" + id.toString())
+    val gearActor = context.actorOf(Props(new Gear(id, randSpeed, self)), name = "Gear" + id.toString)
     stateMap += (gearActor.path.toString -> randSpeed)
     gearActor
   }
@@ -145,7 +145,7 @@ class GearController(guiActor: ActorRef) extends Actor {
       // Can't restart an actor that has been terminated - create new one
       // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
       println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
-      val originalID = gear.path.toString().split("/").last.replace("Gear", "").toInt
+      val originalID = gear.path.toString.split("/").last.replace("Gear", "").toInt
       val child = createGear(originalID)
 
       context.unwatch(gear)
@@ -159,7 +159,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
     case t@Terminated(child) => {
 
-      println("Terminated recieved for child: " + child.path.toString() + " Dead: " + t.getExistenceConfirmed())
+      println("Terminated recieved for child: " + child.path.toString + " Dead: " + t.getExistenceConfirmed())
       guiActor ! GiveUp(child.path.toString)
     }
 
@@ -167,7 +167,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
   }
 
-  def endResult = {
+  def endResult() {
     if (syncGears.length == gearCollection.length) {
       println("[Controller] all gears are back in town!")
 
@@ -184,9 +184,13 @@ class GearController(guiActor: ActorRef) extends Actor {
   protected def printResults(startTime: Long, endTime: Long, maxThreads: Int, minFree: Long, maxTotal: Long) {
     import scala.util.Properties
 
-    def pf(s: String) = println(s)
+    def pf(s: String) {
+      println(s)
+    }
     val props = System.getProperties
-    def pp(name: String) = pf(name + ": " + props.getProperty(name))
+    def pp(name: String) {
+      pf(name + ": " + props.getProperty(name))
+    }
 
     pf("****Microbenchmark****")
     pf("# of Cores: " + rt.availableProcessors.toString)

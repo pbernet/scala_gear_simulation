@@ -61,7 +61,7 @@ object GearGUI extends SimpleSwingApplication {
 
   def top = new MainFrame {
 
-    title = "A simulation of gears using akka-actors and scala-swing in Scala 2.10"
+    title = "A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.10"
     preferredSize = new java.awt.Dimension(1200, 500)
 
     menuBar = new MenuBar {
@@ -83,7 +83,7 @@ object GearGUI extends SimpleSwingApplication {
       dividerLocation = 250
       dividerSize = 8
       oneTouchExpandable = true
-      orientation = Orientation.Vertical;
+      orientation = Orientation.Vertical
 
       /**
        *  Contains controls for the simulation
@@ -153,7 +153,7 @@ object GearGUI extends SimpleSwingApplication {
     }
   }
 
-  def startSimulation: Unit = {
+  def startSimulation() {
     println("[GearGUI] starting new simulation")
 
     isSimulationRunning = true
@@ -170,7 +170,7 @@ object GearGUI extends SimpleSwingApplication {
 
   }
 
-  def cleanup() = {
+  def cleanup() {
     //needed if the simulation is started n times
     if (gearController != null) {
       gearController ! CleanUp
@@ -189,7 +189,7 @@ object GearGUI extends SimpleSwingApplication {
   }
 
 
-  def handleControls() = {
+  def handleControls() {
     if (isSimulationRunning) {
       startButton.enabled = false
       startMenuItem.enabled = false
@@ -219,7 +219,7 @@ object GearGUI extends SimpleSwingApplication {
   /**
    * Revive triggered manually from gui
    */
-  def revive(ref: String) = {
+  def revive(ref: String) {
     println("Revive entered via gui with ref: " + ref)
     gearCollection.find(_.actorRef.path.toString == ref) match {
       case Some(gear) => gearController ! Revive(gear)
@@ -230,7 +230,7 @@ object GearGUI extends SimpleSwingApplication {
   /**
    * Do a total random sabotage (random gear-selection, and random sabotage-value)
    */
-  def doSabotage() = {
+  def doSabotage() {
     if (isSimulationRunning) {
       println("Random sabotage entered")
       val sabotageList = (0 until nOfGears).map(i => gearCollection(scala.util.Random.nextInt(gearCollection.length))).filterNot( _.isTerminated)
@@ -241,7 +241,7 @@ object GearGUI extends SimpleSwingApplication {
   /**
    * Do sabotage one Gear (chosen via the Slider)
    */
-  def doSabotage(ref: String, toSpeed: Int) = {
+  def doSabotage(ref: String, toSpeed: Int) {
     if (isSimulationRunning) {
       println("Manual sabotage enterend for ref: " + ref + " with new Speed: " + toSpeed)
       gearCollection.find(_.actorRef.path.toString == ref) match {

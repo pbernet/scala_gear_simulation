@@ -37,19 +37,19 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
       adjustSpeedTo(syncSpeed)
     }
     case Interrupt(toSpeed: Int) => {
-      println("[Gear (" + id + ")] got interrupt: from " + speed + " to " + toSpeed);
-      speed = toSpeed;
+      println("[Gear (" + id + ")] got interrupt: from " + speed + " to " + toSpeed)
+      speed = toSpeed
       controller ! ReportInterrupt
     }
     case GetSpeed => {
       sender ! speed
     }
     case _ => {
-      println("[Gear (" + self.path.toString() + ")] match error")
+      println("[Gear (" + self.path.toString + ")] match error")
     }
   }
 
-  def adjustSpeedTo(targetSpeed: Int) = {
+  def adjustSpeedTo(targetSpeed: Int) {
 
     //println("Gear "+self.path.toString()+" is adjusting speed")
     if (targetSpeed > speed) {
@@ -63,7 +63,7 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
     }
   }
 
-  def callController = {
+  def callController() {
     println("[Gear (" + id + ")] has syncSpeed")
     controller ! ReceivedSpeed(self)
   }
