@@ -2,7 +2,7 @@ A gear simulation in Scala
 ========
 
 ## Introduction
-A simulation of syncing gears using akka-actors (2.1.0) and scala-swing with Scala 2.10-RC3.
+A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.10.
 
 ## What this branch contains:
 - Usage of [akka Actors](http://akka.io)
