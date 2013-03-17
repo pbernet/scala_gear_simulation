@@ -14,14 +14,14 @@ import com.typesafe.config.ConfigFactory
 object GearGUI extends SimpleSwingApplication {
 
   //Set manually if you want to have more Gears/Sliders
-  private val nOfGears = 10
+  private val nOfGears = 20
 
-  //Needed to track the state of the simulation
+  //Needed to track the progress of the simulation
   private var nOfSynchGears = 0
 
   var isSimulationRunning = false
 
-  //This coll serves as a shadow coll to the internal contents coll. Needed for access to the elements
+  //Serves as a shadow collection to handle the GUI-Eventmatching
   private var sliderCollection = new ListBuffer[GearSlider]
 
 
@@ -40,17 +40,18 @@ object GearGUI extends SimpleSwingApplication {
 
 
   /**
-   * Setup all GUI components here
-   * All are accessible from this application
+   * Setup all GUI components
    */
   object startButton extends Button {text = "Start"}
   object sabotageButton extends Button {text = "Sabotage"}
   object progressBar extends ProgressBar {labelPainted = true; max = nOfGears; value = 0}
-  object calculatedSpeedLabel extends Label {text = "Calculated sync speed"}
+  object calculatedSpeedLabel extends Label {text = "Calculated sync speed:"}
   object calculatedSpeedTextField extends TextField {text = "0"; columns = 3}
+  object sleepTimeLabel extends Label {text = "Simulation speed: fast...slow"}
+  object sleepTime extends Slider {min = 0; value = 150; max = 1000}
 
   val startMenuItem = new MenuItem(Action("Start") {
-    startSimulation
+    startSimulation()
   })
 
   val randomSabotageMenuItem = new MenuItem(Action("Random sabotage n Gears") {
@@ -96,6 +97,8 @@ object GearGUI extends SimpleSwingApplication {
         contents += calculatedSpeedLabel
         contents += calculatedSpeedTextField
         contents += progressBar
+        contents += sleepTimeLabel
+        contents += sleepTime
       }
 
       /**
@@ -132,12 +135,12 @@ object GearGUI extends SimpleSwingApplication {
      */
     listenTo(startButton)
     listenTo(sabotageButton)
-    sliderCollection.foreach(s => listenTo(s))
+    listenTo(sleepTime.mouse.clicks)
     sliderCollection.foreach(s => listenTo(s.mouse.clicks))
     reactions += {
       case ButtonClicked(`startButton`) =>
         println("[GearGUI] Startbutton")
-        startSimulation
+        startSimulation()
       case ButtonClicked(`sabotageButton`) =>
         println("[GearGUI] Sabotage")
         doSabotage()
@@ -147,6 +150,10 @@ object GearGUI extends SimpleSwingApplication {
         }
       case MouseReleased(slider: GearSlider, _, _, _, _) =>
         doSabotage(slider.sliderId, slider.value)
+
+      case MouseReleased(slider: Slider, _, _, _, _) =>
+        println("[GearGUI] SleepTime changed to: " + slider.value)
+        if (isSimulationRunning) gearCollection.map(_ ! SetSleepTime(slider.value) )
 
       case _ =>
       //println("AnyEvent: ")
@@ -243,7 +250,7 @@ object GearGUI extends SimpleSwingApplication {
    */
   def doSabotage(ref: String, toSpeed: Int) {
     if (isSimulationRunning) {
-      println("Manual sabotage enterend for ref: " + ref + " with new Speed: " + toSpeed)
+      println("Manual sabotage entered for ref: " + ref + " with new Speed: " + toSpeed)
       gearCollection.find(_.actorRef.path.toString == ref) match {
         case Some(gear) if(!gear.isTerminated) => saboteur ! SabotageManual(gear, toSpeed)
         case _ => ()
@@ -252,23 +259,25 @@ object GearGUI extends SimpleSwingApplication {
     }
   }
 
-  /**
-   * http://doc.akka.io/docs/akka/2.0.3/scala/actors.html#actors-scala
-   * TODO See if warning "Creating Actors using anonymous classes" applies here
-   */
-  //
+
+
   def createReceiverActor = system.actorOf(Props(new Actor {
     println("Initialize GUIActor")
     def receive = {
       case CurrentSpeedGUI(ref: String, speed: Int) =>
         //println("[GearGUI] (" + gearId + ")] SetSpeed to newSpeed: " + speed)
-        findSlider(ref).value = speed
-        if (findSlider(ref).background != java.awt.Color.RED) {
-          findSlider(ref).background = java.awt.Color.YELLOW
+        val slider =  findSlider(ref)
+        slider.value = speed
+        //trick to show sabotaged gears longer
+        if (slider.background != java.awt.Color.RED) {
+          slider.background = java.awt.Color.YELLOW
+          slider.tooltip = "[" + slider.value + "] " + "Synchronizing..."
         }
       case GearProblem(ref: String) =>
         println("[GearGUI] Recieved gear problem - due to Sabotage!")
-        findSlider(ref).background = java.awt.Color.RED
+        val slider =  findSlider(ref)
+        slider.background = java.awt.Color.RED
+        slider.tooltip = "[" + slider.value + "] " + "Recieved gear problem - due to Sabotage"
       case Progress(numberOfSyncGears: Int) =>
         println("[GearGUI] Progress: " + numberOfSyncGears)
         progressBar.value = numberOfSyncGears
@@ -278,19 +287,26 @@ object GearGUI extends SimpleSwingApplication {
 
       case ReceivedSpeedGUI(ref: String) =>
         println("[GearGUI] ReceivedSpeedGUI ref: " + ref)
-        findSlider(ref).background = java.awt.Color.GREEN
+        val slider =  findSlider(ref)
+        slider.background = java.awt.Color.GREEN
+        slider.tooltip = "[" + slider.value + "] " + "Click to bring out of sync"
+
       case SetCalculatedSyncSpeed(syncSpeed: Int) =>
         println("[GearGUI] SetCalculatedSyncSpeed syncSpeed: " + syncSpeed)
         calculatedSpeedTextField.text = syncSpeed.toString
       case Crashed(gearActor) => {
         println("[GearGUI] Recieved gear problem - due to Exception!")
-        findSlider(gearActor.path.toString).background = java.awt.Color.MAGENTA
+        val slider =  findSlider(gearActor.path.toString)
+        slider.background = java.awt.Color.MAGENTA
+        slider.tooltip = "[" + slider.value + "] " + "Recieved gear problem - due to Exception"
       }
       case GiveUp(ref: String) => {
         println("[GearGUI] Recieved gear problem - give up!")
-        findSlider(ref).background = java.awt.Color.BLACK
+        val slider =  findSlider(ref)
+        slider.background = java.awt.Color.BLACK
+        slider.tooltip = "[" + slider.value + "] " + "Double click to bring back to life"
       }
-      case GearsAmount(amount: Int) => {
+      case RequestNumberOfGears => {
         println("[GearGUI] Recieved GearsAmount")
         sender ! nOfGears
       }

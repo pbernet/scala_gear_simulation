@@ -13,9 +13,9 @@ import scala.concurrent.duration._
 class GearController(guiActor: ActorRef) extends Actor {
 
   /**
-   * Let it crash model
+   * Let it crash model:
    * - Restart the crashed actor (OneForOne)
-   * - Give up if 2 exceptions occurs from one actor within 2 seconds
+   * - Give up if 2 exceptions occur from one actor within 2 seconds
    */
 
   override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 2.seconds) {
@@ -48,11 +48,11 @@ class GearController(guiActor: ActorRef) extends Actor {
   def init() {
     //http://doc.akka.io/docs/akka/snapshot/scala/futures.html
     implicit val timeout = Timeout(5 seconds)
-    val future = guiActor ? GearsAmount(2000) // enabled by the “ask” import
-    val gearAmount = Await.result(future, timeout.duration).asInstanceOf[Int]
+    val future = guiActor ? RequestNumberOfGears // enabled by the “ask” import
+    val nOfGears = Await.result(future, timeout.duration).asInstanceOf[Int]
 
 
-    for (i <- 0 until gearAmount) {
+    for (i <- 0 until nOfGears) {
       val child = createGear(i)
       gearColl += child
       //registration for "Lifecycle Monitoring aka DeathWatch"
@@ -73,7 +73,7 @@ class GearController(guiActor: ActorRef) extends Actor {
     case StartSync => {
       println("[Controller] Send commands for syncing to gears!")
 
-      if (gearColl.isEmpty) init
+      if (gearColl.isEmpty) init()
 
       var speeds = new ListBuffer[Int]
       gearCollection.foreach(e => {
@@ -108,7 +108,7 @@ class GearController(guiActor: ActorRef) extends Actor {
       guiActor ! ReceivedSpeedGUI(ref.path.toString)
       guiActor ! Progress(syncGears.length)
 
-      endResult
+      if (isSimulationFinished) benchmark()
     }
 
     case CurrentSpeed(ref: String, speed: Int) => {
@@ -133,12 +133,12 @@ class GearController(guiActor: ActorRef) extends Actor {
       }
     }
     case GetGears => {
-      sender ! this.gearCollection
+      sender ! gearCollection
     }
 
     case CleanUp => {
       context.children foreach (context.stop(_))
-      resetGearCollection
+      resetGearCollection()
     }
 
     case Revive(gear) => {
@@ -159,7 +159,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
     case t@Terminated(child) => {
 
-      println("Terminated recieved for child: " + child.path.toString + " Dead: " + t.getExistenceConfirmed())
+      println("Terminated received for child: " + child.path.toString + " Dead: " + t.getExistenceConfirmed())
       guiActor ! GiveUp(child.path.toString)
     }
 
@@ -167,21 +167,20 @@ class GearController(guiActor: ActorRef) extends Actor {
 
   }
 
-  def endResult() {
-    if (syncGears.length == gearCollection.length) {
-      println("[Controller] all gears are back in town!")
+  private def isSimulationFinished = {
+    syncGears.length == gearCollection.length
+  }
 
-
+  private def benchmark() {
       //a simple micro benchmark inspired by:
       //https://bitbucket.org/eengbrec/managedforkjoinpool/src/tip/src/main/scala/actorbench/TestHarness.scala
       maxThreads = max(maxThreads, totalThreads)
       minFree = min(minFree, rt.freeMemory)
       maxTotal = max(maxTotal, rt.totalMemory)
       printResults(startTime, System.nanoTime, maxThreads, minFree, maxTotal)
-    }
   }
 
-  protected def printResults(startTime: Long, endTime: Long, maxThreads: Int, minFree: Long, maxTotal: Long) {
+  private def printResults(startTime: Long, endTime: Long, maxThreads: Int, minFree: Long, maxTotal: Long) {
     import scala.util.Properties
 
     def pf(s: String) {
@@ -210,7 +209,7 @@ class GearController(guiActor: ActorRef) extends Actor {
     pf("****")
   }
 
-  def totalThreads = {
+  private def totalThreads = {
     def rec(tg: ThreadGroup): Int = if (tg.getParent eq null) tg.activeCount else rec(tg.getParent)
     rec(Thread.currentThread.getThreadGroup)
   }

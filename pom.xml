@@ -36,23 +36,11 @@
             <artifactId>akka-actor_2.10</artifactId>
             <version>2.1.0</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.specs2</groupId>
-            <artifactId>specs2_2.10.0-M3</artifactId>
-            <version>1.9</version>
-        </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>scala:run</defaultGoal>
         <sourceDirectory>src/main/scala/ch/clx/geargui</sourceDirectory>
-        <testSourceDirectory>src/test/scala/ch/clx/geargui</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.scala-tools</groupId>

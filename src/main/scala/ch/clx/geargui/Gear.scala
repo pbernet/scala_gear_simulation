@@ -11,7 +11,8 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
   var speed = mySpeed
   def gearId = id
-  val failureLevel = 0.02 //raise to get more
+  val failureLevel = 0.02 //raise to get more exceptions
+  var sleepTime: Long = 150 //raise to slow down simulation
 
   println("[Gear (" + id + ")] created with speed: " + mySpeed)
 
@@ -27,7 +28,7 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
       if (math.random < failureLevel) {
         throw new RuntimeException
       }
-      Thread.sleep(100)
+      Thread.sleep(sleepTime)
       controller ! CurrentSpeed(self.path.toString, speed)
       adjustSpeedTo(syncSpeed)
     }
@@ -44,6 +45,10 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
     case GetSpeed => {
       sender ! speed
     }
+    case SetSleepTime(newTime: Long) => {
+      sleepTime = newTime
+    }
+
     case _ => {
       println("[Gear (" + self.path.toString + ")] match error")
     }
@@ -59,7 +64,7 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
       speed -= 1
       self ! SyncGear(targetSpeed)
     } else if (targetSpeed == speed) {
-      callController
+      callController()
     }
   }
 
