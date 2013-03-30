@@ -25,8 +25,8 @@ class GearController(guiActor: ActorRef) extends Actor {
     case _: RuntimeException => Restart
   }
 
-  private var gearColl = new ListBuffer[ActorRef]
-  private var syncGears = new ListBuffer[ActorRef]
+  private var gearColl = ListBuffer[ActorRef]()
+  private var syncGears = ListBuffer[ActorRef]()
   private var syncSpeed = 0
 
   val rt = Runtime.getRuntime
@@ -37,12 +37,12 @@ class GearController(guiActor: ActorRef) extends Actor {
 
   var stateMap: Map[String, Int] = Map()
 
-  def gearCollection = {
-    gearColl
+  def gearList = {
+    gearColl.toList
   }
 
   def resetGearCollection() {
-    gearColl = new ListBuffer[ActorRef]
+    gearColl = ListBuffer[ActorRef]()
   }
 
   def init() {
@@ -76,7 +76,7 @@ class GearController(guiActor: ActorRef) extends Actor {
       if (gearColl.isEmpty) init()
 
       var speeds = new ListBuffer[Int]
-      gearCollection.foreach(e => {
+      gearList.foreach(e => {
 
         implicit val timeout = Timeout(5 seconds)
         val future = e ? GetSpeed // enabled by the “ask” import
@@ -89,8 +89,8 @@ class GearController(guiActor: ActorRef) extends Actor {
       guiActor ! SetCalculatedSyncSpeed(syncSpeed)
 
       println("[Controller] calculated syncSpeed: " + syncSpeed)
-      guiActor ! AllGears((gearCollection.map(_.path.toString)).toList)
-      gearCollection.foreach(_ ! SyncGear(syncSpeed))
+      guiActor ! AllGears((gearList.map(_.path.toString)))
+      gearList.foreach(_ ! SyncGear(syncSpeed))
       println("[Controller] started all gears")
     }
     case ReSync(gearActor) => {
@@ -118,6 +118,10 @@ class GearController(guiActor: ActorRef) extends Actor {
       guiActor ! CurrentSpeedGUI(ref, speed)
     }
 
+    case SetSleepTime(time) => {
+      gearList.map(_ ! SetSleepTime(time) )
+    }
+
     case ReportInterrupt => {
       sender match {
         case actor: ActorRef => {
@@ -133,7 +137,7 @@ class GearController(guiActor: ActorRef) extends Actor {
       }
     }
     case GetGears => {
-      sender ! gearCollection
+      sender ! gearList
     }
 
     case CleanUp => {
@@ -141,20 +145,29 @@ class GearController(guiActor: ActorRef) extends Actor {
       resetGearCollection()
     }
 
-    case Revive(gear) => {
-      // Can't restart an actor that has been terminated - create new one
-      // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
-      println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
-      val originalID = gear.path.toString.split("/").last.replace("Gear", "").toInt
-      val child = createGear(originalID)
+    case Revive(ref) => {
 
-      context.unwatch(gear)
-      context.watch(child)
+      def revive (gear : ActorRef) = {
+        // Can't restart an actor that has been terminated - create a new one instead
+        // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
+        println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
+        val originalID = gear.path.toString.split("/").last.replace("Gear", "").toInt
+        val child = createGear(originalID)
 
-      gearColl -= gear
-      gearColl += child
+        context.unwatch(gear)
+        context.watch(child)
 
-      self ! ReSync(child)
+        gearColl -= gear
+        gearColl += child
+
+        self ! ReSync(child)
+      }
+
+     //start here
+      gearList.find(_.actorRef.path.toString == ref) match {
+        case Some(gear) => revive(gear)
+        case None => ()
+      }
     }
 
     case t@Terminated(child) => {
@@ -168,7 +181,7 @@ class GearController(guiActor: ActorRef) extends Actor {
   }
 
   private def isSimulationFinished = {
-    syncGears.length == gearCollection.length
+    syncGears.length == gearList.length
   }
 
   private def benchmark() {

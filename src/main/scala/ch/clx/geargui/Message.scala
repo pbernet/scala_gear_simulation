@@ -20,7 +20,7 @@ case class ReceivedSpeed(actorRef : ActorRef) extends Message
 case object ReportInterrupt extends Message
 case object GetGears extends Message
 case object CleanUp extends Message
-case class Revive(gearActor : ActorRef) extends Message
+case class Revive(ref : String) extends Message
 case object RequestNumberOfGears extends Message
 
 //GUI API
@@ -33,5 +33,5 @@ case class ReceivedSpeedGUI(ref: String) extends Message
 case class CurrentSpeedGUI(ref : String, speed: Int) extends Message
 
 //Saboteur API
-case class Sabotage(nGears: List[ActorRef]) extends Message
-case class SabotageManual(gearActor : ActorRef, toSpeed: Int) extends Message
+case class SabotageRandom() extends Message
+case class SabotageManual(ref : String, toSpeed: Int) extends Message

@@ -3,15 +3,14 @@ package ch.clx.geargui
 
 import akka.actor._
 import scala.concurrent.duration._
-// for implicit execution context
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
   var speed = mySpeed
-  def gearId = id
-  val failureLevel = 0.02 //raise to get more exceptions
+
+  val failureLevel = 0.04 //raise to get more exceptions
   var sleepTime: Long = 150 //raise to slow down simulation
 
   println("[Gear (" + id + ")] created with speed: " + mySpeed)
@@ -21,12 +20,8 @@ class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
       //println("[Gear ("+id+")] activated, try to follow controller command (form mySpeed ("+mySpeed+") to syncspeed ("+syncSpeed+")")
 
-      // Throw NPE and/or RuntimeEx - these sliders are marked magenta in the GUI
       if (math.random < failureLevel) {
-        throw new NullPointerException
-      }
-      if (math.random < failureLevel) {
-        throw new RuntimeException
+        sys.error("I just died due to a RuntimeException - I am marked magenta in the GUI")
       }
       Thread.sleep(sleepTime)
       controller ! CurrentSpeed(self.path.toString, speed)
