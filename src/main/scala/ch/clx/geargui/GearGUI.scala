@@ -32,6 +32,7 @@ object GearGUI extends SimpleSwingApplication {
    */
   object startButton extends Button {text = "Start"}
   object sabotageButton extends Button {text = "Sabotage"}
+  object coordinateButton extends Button {text = "Coordinate"}
   object progressBar extends ProgressBar {labelPainted = true; max = nOfGears; value = 0}
   object calculatedSpeedLabel extends Label {text = "Calculated sync speed:"}
   object calculatedSpeedTextField extends TextField {text = "0"; columns = 3}
@@ -81,6 +82,7 @@ object GearGUI extends SimpleSwingApplication {
         preferredSize = new java.awt.Dimension(200, 0)
         contents += startButton
         sabotageButton.enabled = false
+        contents += coordinateButton
         contents += sabotageButton
         contents += calculatedSpeedLabel
         contents += calculatedSpeedTextField
@@ -123,6 +125,7 @@ object GearGUI extends SimpleSwingApplication {
      */
     listenTo(startButton)
     listenTo(sabotageButton)
+    listenTo(coordinateButton)
     listenTo(sleepTime.mouse.clicks)
     sliderCollection.foreach(s => listenTo(s.mouse.clicks))
     reactions += {
@@ -132,6 +135,9 @@ object GearGUI extends SimpleSwingApplication {
       case ButtonClicked(`sabotageButton`) =>
         println("[GearGUI] SabotageRandom")
         sabotageRandom()
+      case ButtonClicked(`coordinateButton`) =>
+        println("[GearGUI] Coordinate 1-3")
+        coordinate1to3()
       case MouseReleased(slider: GearSlider, _, _, 2, _) =>
         if (slider.background == java.awt.Color.BLACK) {
           revive(slider.sliderId)
@@ -230,7 +236,13 @@ object GearGUI extends SimpleSwingApplication {
     }
   }
 
+  def coordinate1to3() {
+    if (isSimulationRunning) {
+      println("Coordination entered")
+      gearController ! Coordinate
+    }
 
+  }
 
   def createReceiverActor = system.actorOf(Props(new Actor {
     println("Initialize GUIActor")

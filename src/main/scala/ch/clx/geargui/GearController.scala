@@ -35,6 +35,8 @@ class GearController(guiActor: ActorRef) extends Actor {
   var minFree = rt.freeMemory
   var maxTotal = rt.totalMemory
 
+  var coordinator: Option[ActorRef] = None
+
   var stateMap: Map[String, Int] = Map()
 
   def gearList = {
@@ -119,7 +121,7 @@ class GearController(guiActor: ActorRef) extends Actor {
     }
 
     case SetSleepTime(time) => {
-      gearList.map(_ ! SetSleepTime(time) )
+      gearList.map(_ ! SetSleepTime(time))
     }
 
     case ReportInterrupt => {
@@ -143,11 +145,13 @@ class GearController(guiActor: ActorRef) extends Actor {
     case CleanUp => {
       context.children foreach (context.stop(_))
       resetGearCollection()
+      val theCoordinator = coordinator.get
+      context.stop(theCoordinator)
     }
 
     case Revive(ref) => {
 
-      def revive (gear : ActorRef) = {
+      def revive(gear: ActorRef) = {
         // Can't restart an actor that has been terminated - create a new one instead
         // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
         println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
@@ -163,7 +167,7 @@ class GearController(guiActor: ActorRef) extends Actor {
         self ! ReSync(child)
       }
 
-     //start here
+      //start here
       gearList.find(_.actorRef.path.toString == ref) match {
         case Some(gear) => revive(gear)
         case None => ()
@@ -176,6 +180,14 @@ class GearController(guiActor: ActorRef) extends Actor {
       guiActor ! GiveUp(child.path.toString)
     }
 
+    case Coordinate => {
+
+      if (coordinator.isEmpty) {
+        coordinator = Some(context.system.actorOf(Props(new Coordinator(gearList.splitAt(3)._1)), name = "coordinator"))
+      }
+      coordinator.map(_ ! CoordinateGears)
+    }
+
     case _ => println("[Controller] No match :(")
 
   }
@@ -185,12 +197,12 @@ class GearController(guiActor: ActorRef) extends Actor {
   }
 
   private def benchmark() {
-      //a simple micro benchmark inspired by:
-      //https://bitbucket.org/eengbrec/managedforkjoinpool/src/tip/src/main/scala/actorbench/TestHarness.scala
-      maxThreads = max(maxThreads, totalThreads)
-      minFree = min(minFree, rt.freeMemory)
-      maxTotal = max(maxTotal, rt.totalMemory)
-      printResults(startTime, System.nanoTime, maxThreads, minFree, maxTotal)
+    //a simple micro benchmark inspired by:
+    //https://bitbucket.org/eengbrec/managedforkjoinpool/src/tip/src/main/scala/actorbench/TestHarness.scala
+    maxThreads = max(maxThreads, totalThreads)
+    minFree = min(minFree, rt.freeMemory)
+    maxTotal = max(maxTotal, rt.totalMemory)
+    printResults(startTime, System.nanoTime, maxThreads, minFree, maxTotal)
   }
 
   private def printResults(startTime: Long, endTime: Long, maxThreads: Int, minFree: Long, maxTotal: Long) {

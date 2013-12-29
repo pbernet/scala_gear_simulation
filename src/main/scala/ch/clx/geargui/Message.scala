@@ -22,6 +22,9 @@ case object GetGears extends Message
 case object CleanUp extends Message
 case class Revive(ref : String) extends Message
 case object RequestNumberOfGears extends Message
+case object Coordinate extends Message
+case object CoordinateGears extends Message
+case class CoordinateFinished(actorRef : ActorRef) extends Message
 
 //GUI API
 case class Progress(numberOfSyncGears: Int) extends Message

@@ -4,25 +4,43 @@ package ch.clx.geargui
 import akka.actor._
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import akka.transactor.Coordinated
+import scala.util.Random
 
 
 class Gear(id: Int, mySpeed: Int, controller: ActorRef) extends Actor {
 
   var speed = mySpeed
 
-  val failureLevel = 0.04 //raise to get more exceptions
+  val failureLevel = 0.04
+  //raise to get more exceptions
   var sleepTime: Long = 150 //raise to slow down simulation
 
   println("[Gear (" + id + ")] created with speed: " + mySpeed)
 
   def receive = {
+
+    case coordinated@Coordinated(SyncGear(syncSpeed: Int)) ⇒ {
+      println("[Gear (" + id + ")] coordinated Sync entered")
+
+     val sleepTime = Random.nextLong().abs / 2000000000000000L
+      Thread.sleep(sleepTime)
+      println("[Gear (" + id + ")] slept for: " + sleepTime + " before going to coordinated sync speed")
+
+      coordinated.atomic{ implicit t ⇒
+        speed = syncSpeed
+        //sender ! CoordinateFinished(self)
+      }
+    }
+
+
     case SyncGear(syncSpeed: Int) => {
 
-      //println("[Gear ("+id+")] activated, try to follow controller command (form mySpeed ("+mySpeed+") to syncspeed ("+syncSpeed+")")
+      //println("[Gear (" + id + ")] activated, try to follow controller command (form mySpeed (" + mySpeed + ") to syncspeed (" + syncSpeed + ")")
 
-      if (math.random < failureLevel) {
-        sys.error("I just died due to a RuntimeException - I am marked magenta in the GUI")
-      }
+      //      if (math.random < failureLevel) {
+      //        sys.error("I just died due to a RuntimeException - I am marked magenta in the GUI")
+      //      }
       Thread.sleep(sleepTime)
       controller ! CurrentSpeed(self.path.toString, speed)
       adjustSpeedTo(syncSpeed)
