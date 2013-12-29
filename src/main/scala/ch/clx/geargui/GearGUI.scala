@@ -8,7 +8,7 @@ import akka.actor.{Actor, ActorRef, Props, ActorSystem}
 
 object GearGUI extends SimpleSwingApplication {
 
-  //Set manually if you want to have more Gears/Sliders
+  //Set manuallyx if you want to have more Gears/Sliders
   val nOfGears = 20
 
   //Track the progress of the simulation
