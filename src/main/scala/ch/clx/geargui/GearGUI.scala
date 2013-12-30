@@ -23,20 +23,39 @@ object GearGUI extends SimpleSwingApplication {
   val system = ActorSystem("GearSystem")
 
   var gearController: ActorRef = null
-  var saboteur: ActorRef = null
   var guiActor: ActorRef = null
 
 
   /**
    * Setup all GUI components
    */
-  object startButton extends Button {text = "Start"}
-  object sabotageButton extends Button {text = "Sabotage"}
-  object progressBar extends ProgressBar {labelPainted = true; max = nOfGears; value = 0}
-  object calculatedSpeedLabel extends Label {text = "Calculated sync speed:"}
-  object calculatedSpeedTextField extends TextField {text = "0"; columns = 3}
-  object sleepTimeLabel extends Label {text = "Simulation speed: fast...slow"}
-  object sleepTime extends Slider {min = 0; value = 150; max = 1000}
+  object startButton extends Button {
+    text = "Start"
+  }
+
+  object sabotageButton extends Button {
+    text = "Sabotage"
+  }
+
+  object progressBar extends ProgressBar {
+    labelPainted = true; max = nOfGears; value = 0
+  }
+
+  object calculatedSpeedLabel extends Label {
+    text = "Calculated sync speed:"
+  }
+
+  object calculatedSpeedTextField extends TextField {
+    text = "0"; columns = 3
+  }
+
+  object sleepTimeLabel extends Label {
+    text = "Simulation speed: fast...slow"
+  }
+
+  object sleepTime extends Slider {
+    min = 0; value = 150; max = 1000
+  }
 
   val startMenuItem = new MenuItem(Action("Start") {
     startSimulation()
@@ -75,7 +94,7 @@ object GearGUI extends SimpleSwingApplication {
       orientation = Orientation.Vertical
 
       /**
-       *  Contains controls for the simulation
+       * Contains controls for the simulation
        */
       val buttonPanel = new FlowPanel {
         preferredSize = new java.awt.Dimension(200, 0)
@@ -156,11 +175,8 @@ object GearGUI extends SimpleSwingApplication {
     isSimulationRunning = true
 
     guiActor = createReceiverActor
-
-    gearController = system.actorOf(Props(new GearController(guiActor)), name = "GearController")
-    saboteur = system.actorOf(Props(new Saboteur(gearController)), name = "Saboteur")
-
-    gearController ! StartSync
+    gearController = system.actorOf(Props[GearController], name = "GearController")
+    gearController ! StartSync (guiActor)
 
     startButton.enabled = false
     startMenuItem.enabled = false
@@ -174,11 +190,6 @@ object GearGUI extends SimpleSwingApplication {
       system.stop(gearController)
       gearController = null
       system.stop(guiActor)
-    }
-
-    if (saboteur != null) {
-      system.stop(saboteur)
-      saboteur = null
     }
 
     progressBar.value = 0
@@ -216,7 +227,7 @@ object GearGUI extends SimpleSwingApplication {
   def sabotageRandom() {
     if (isSimulationRunning) {
       println("Random sabotage entered")
-      saboteur ! SabotageRandom()
+      gearController ! SabotageRandom()
     }
   }
 
@@ -226,18 +237,18 @@ object GearGUI extends SimpleSwingApplication {
   def sabotageManual(ref: String, toSpeed: Int) {
     if (isSimulationRunning) {
       println("Manual sabotage entered for ref: " + ref + " with new Speed: " + toSpeed)
-      saboteur ! SabotageManual(ref, toSpeed)
+      gearController ! SabotageManual(ref, toSpeed)
     }
   }
 
 
-
-  def createReceiverActor = system.actorOf(Props(new Actor {
+  class ReceiverActor() extends Actor {
     println("Initialize GUIActor")
+
     def receive = {
       case CurrentSpeedGUI(ref: String, speed: Int) =>
         //println("[GearGUI] (" + gearId + ")] SetSpeed to newSpeed: " + speed)
-        val slider =  findSlider(ref)
+        val slider = findSlider(ref)
         slider.value = speed
         //trick to show sabotaged gears longer
         if (slider.background != java.awt.Color.RED) {
@@ -246,7 +257,7 @@ object GearGUI extends SimpleSwingApplication {
         }
       case GearProblem(ref: String) =>
         println("[GearGUI] Recieved gear problem - due to SabotageRandom!")
-        val slider =  findSlider(ref)
+        val slider = findSlider(ref)
         slider.background = java.awt.Color.RED
         slider.tooltip = "[" + slider.value + "] " + "Recieved gear problem - due to SabotageRandom"
       case Progress(numberOfSyncGears: Int) =>
@@ -258,7 +269,7 @@ object GearGUI extends SimpleSwingApplication {
 
       case ReceivedSpeedGUI(ref: String) =>
         println("[GearGUI] ReceivedSpeedGUI ref: " + ref)
-        val slider =  findSlider(ref)
+        val slider = findSlider(ref)
         slider.background = java.awt.Color.GREEN
         slider.tooltip = "[" + slider.value + "] " + "Click to bring out of sync"
 
@@ -267,13 +278,13 @@ object GearGUI extends SimpleSwingApplication {
         calculatedSpeedTextField.text = syncSpeed.toString
       case Crashed(gearActor) => {
         println("[GearGUI] Recieved gear problem - due to Exception!")
-        val slider =  findSlider(gearActor.path.toString)
+        val slider = findSlider(gearActor.path.toString)
         slider.background = java.awt.Color.MAGENTA
         slider.tooltip = "[" + slider.value + "] " + "Recieved gear problem - due to Exception"
       }
       case GiveUp(ref: String) => {
         println("[GearGUI] Recieved gear problem - give up!")
-        val slider =  findSlider(ref)
+        val slider = findSlider(ref)
         slider.background = java.awt.Color.BLACK
         slider.tooltip = "[" + slider.value + "] " + "Double click to bring back to life"
       }
@@ -281,12 +292,14 @@ object GearGUI extends SimpleSwingApplication {
         println("[GearGUI] Recieved GearsAmount")
         sender ! nOfGears
       }
-     case AllGears(allPaths: List[String])=> {
-       initSliderCollection(allPaths)
+      case AllGears(allPaths: List[String]) => {
+        initSliderCollection(allPaths)
       }
       case _ => println("[GearGUI] Message could not be evaluated!")
     }
-  }))
+  }
+
+  def createReceiverActor = system.actorOf(Props[ReceiverActor])
 
 
   def initSliderCollection(allPaths: List[String]) {

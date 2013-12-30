@@ -8,14 +8,15 @@ import concurrent.Await
 import akka.util.Timeout
 import akka.pattern.ask
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 
-class GearController(guiActor: ActorRef) extends Actor {
+class GearController extends Actor {
 
   /**
    * Let it crash model:
-   * - Restart the crashed actor (OneForOne)
-   * - Give up if 2 exceptions occur from one actor within 2 seconds
+   * - Restart the crashed Gear actor (OneForOne)
+   * - Give up if 2 exceptions occur from one gear actor within 2 seconds (double click in GUI to bring back to live)
    */
 
   override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 2.seconds) {
@@ -36,6 +37,10 @@ class GearController(guiActor: ActorRef) extends Actor {
   var maxTotal = rt.totalMemory
 
   var stateMap: Map[String, Int] = Map()
+
+  val saboteur = context.actorOf(Props(classOf[Saboteur]), name = "Saboteur")
+
+  var guiActor: ActorRef = null
 
   def gearList = {
     gearColl.toList
@@ -64,15 +69,15 @@ class GearController(guiActor: ActorRef) extends Actor {
 
   private def createGear(id: Int): ActorRef = {
     val randSpeed = scala.util.Random.nextInt(1000)
-    val gearActor = context.actorOf(Props(new Gear(id, randSpeed, self)), name = "Gear" + id.toString)
+    val gearActor = context.actorOf(Props(new Gear(id, randSpeed)), name = "Gear" + id.toString)
     stateMap += (gearActor.path.toString -> randSpeed)
     gearActor
   }
 
   def receive = {
-    case StartSync => {
+    case StartSync(theGUIActor) => {
       println("[Controller] Send commands for syncing to gears!")
-
+      guiActor =  theGUIActor
       if (gearColl.isEmpty) init()
 
       var speeds = new ListBuffer[Int]
@@ -101,11 +106,12 @@ class GearController(guiActor: ActorRef) extends Actor {
       //forward does the same as !, but will pass the original sender
       guiActor forward crashed
     }
-    case ReceivedSpeed(ref: ActorRef) => {
-      println("[Controller] Syncspeed received by a gear (" + ref + ")")
-      syncGears += ref
+    case ReceivedSpeed => {
+      val gearRef = context.sender
+      println("[Controller] Syncspeed received by a gear (" + gearRef + ")")
+      syncGears += gearRef
 
-      guiActor ! ReceivedSpeedGUI(ref.path.toString)
+      guiActor ! ReceivedSpeedGUI(gearRef.path.toString)
       guiActor ! Progress(syncGears.length)
 
       if (isSimulationFinished) benchmark()
@@ -119,7 +125,7 @@ class GearController(guiActor: ActorRef) extends Actor {
     }
 
     case SetSleepTime(time) => {
-      gearList.map(_ ! SetSleepTime(time) )
+      gearList.map(_ ! SetSleepTime(time))
     }
 
     case ReportInterrupt => {
@@ -147,7 +153,7 @@ class GearController(guiActor: ActorRef) extends Actor {
 
     case Revive(ref) => {
 
-      def revive (gear : ActorRef) = {
+      def revive(gear: ActorRef) = {
         // Can't restart an actor that has been terminated - create a new one instead
         // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
         println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
@@ -163,11 +169,19 @@ class GearController(guiActor: ActorRef) extends Actor {
         self ! ReSync(child)
       }
 
-     //start here
+      //start here
       gearList.find(_.actorRef.path.toString == ref) match {
         case Some(gear) => revive(gear)
         case None => ()
       }
+    }
+
+    case SabotageRandom() => {
+      saboteur ! SabotageRandom()
+    }
+
+    case SabotageManual(ref, toSpeed) => {
+      saboteur ! SabotageManual(ref, toSpeed)
     }
 
     case t@Terminated(child) => {
@@ -185,12 +199,12 @@ class GearController(guiActor: ActorRef) extends Actor {
   }
 
   private def benchmark() {
-      //a simple micro benchmark inspired by:
-      //https://bitbucket.org/eengbrec/managedforkjoinpool/src/tip/src/main/scala/actorbench/TestHarness.scala
-      maxThreads = max(maxThreads, totalThreads)
-      minFree = min(minFree, rt.freeMemory)
-      maxTotal = max(maxTotal, rt.totalMemory)
-      printResults(startTime, System.nanoTime, maxThreads, minFree, maxTotal)
+    //a simple micro benchmark inspired by:
+    //https://bitbucket.org/eengbrec/managedforkjoinpool/src/tip/src/main/scala/actorbench/TestHarness.scala
+    maxThreads = max(maxThreads, totalThreads)
+    minFree = min(minFree, rt.freeMemory)
+    maxTotal = max(maxTotal, rt.totalMemory)
+    printResults(startTime, System.nanoTime, maxThreads, minFree, maxTotal)
   }
 
   private def printResults(startTime: Long, endTime: Long, maxThreads: Int, minFree: Long, maxTotal: Long) {

@@ -32,6 +32,16 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 - Changed akka implementation from 1.3 -> 2.0 -> 2.1 using the [akka migration guides](http://doc.akka.io/docs/akka/2.0.3/project/migration-guide-1.3.x-2.0.x.html)
 - Minor enhancements to the GUI
 
+### Update to akka 2.2.3
+- change the gear actor behaviour with "akka become", so there is no need for a local var "speed" anymore
+- Minor enhancements: Removed ActorRefs in Messages
+- Added sbt and support for monitoring with Typesafe Console via sbt-atmos plug-in https://github.com/sbt/sbt-atmos
+
+```
+./sbt
+atmos:run-main ch.clx.geargui.GearGUI
+```
 
 ## Monitoring
 - YourKit for thread activity
+- Typesafe Console via sbt-atmos plug-in
