@@ -14,15 +14,13 @@ import scala.language.postfixOps
 
 class Gear(id: Int, initSpeed: Int) extends Actor {
 
-  val failureLevel = 0.04
-  //raise to get more exceptions
-  var sleepTime: Long = 150 //raise to slow down simulation
+  //TODO These vars hold state which is changed from the outside...
+  var errorLevel: Double = 0.02 //raise to get more exceptions via Slider in GUI
+  var sleepTime: Long = 150 //raise to slow down simulation via Slider in GUI
 
   val controller = context.parent
 
-  println("[Gear (" + id + ")] created with speed: " + initSpeed)
-
-  //change the actor behaviour with "akka become", so there is no need for a local var "speed" anymore
+  //The old var "speed" is expressed here through the "akka become" meccano
   def receive = adjust(initSpeed)
 
   def adjust(speed: Int): Receive = {
@@ -31,7 +29,7 @@ class Gear(id: Int, initSpeed: Int) extends Actor {
 
       //println("[Gear ("+id+")] activated, try to follow controller command (form mySpeed ("+mySpeed+") to syncspeed ("+syncSpeed+")")
 
-      if (math.random < failureLevel) {
+      if (math.random < errorLevel) {
         sys.error("I just died due to a RuntimeException - I am marked magenta in the GUI")
       }
       Thread.sleep(sleepTime)
@@ -53,6 +51,11 @@ class Gear(id: Int, initSpeed: Int) extends Actor {
     }
     case SetSleepTime(newTime: Long) => {
       sleepTime = newTime
+    }
+
+    case SetErrorLevel(newLevel: Double) =>  {
+      println("[Gear (" + self.path.toString + ")] error level set to: " + newLevel/100)
+      errorLevel = newLevel/100
     }
 
     case _ => {

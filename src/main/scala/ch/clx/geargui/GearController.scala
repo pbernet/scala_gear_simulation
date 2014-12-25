@@ -94,12 +94,12 @@ class GearController extends Actor {
       guiActor ! SetCalculatedSyncSpeed(syncSpeed)
 
       println("[Controller] calculated syncSpeed: " + syncSpeed)
-      guiActor ! AllGears((gearList.map(_.path.toString)))
+      guiActor ! AllGears(gearList.map(_.path.toString))
       gearList.foreach(_ ! SyncGear(syncSpeed))
       println("[Controller] started all gears")
     }
     case ReSync(gearActor) => {
-      val oldSpeed = stateMap.get(gearActor.path.toString).getOrElse(0)
+      val oldSpeed = stateMap.getOrElse(gearActor.path.toString, 0)
       gearActor ! SyncGearRestart(syncSpeed, oldSpeed)
     }
     case crashed@Crashed(gearActor) => {
@@ -126,6 +126,11 @@ class GearController extends Actor {
 
     case SetSleepTime(time) => {
       gearList.map(_ ! SetSleepTime(time))
+    }
+
+    case SetErrorLevel(level) => {
+      println("[GearController] error Level: "  + level)
+      gearList.map(_ ! SetErrorLevel(level))
     }
 
     case ReportInterrupt => {

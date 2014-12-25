@@ -2,7 +2,7 @@ A gear simulation in Scala
 ========
 
 ## Introduction
-A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.10.
+A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.11.x
 
 ## What this branch contains:
 - Usage of [akka Actors](http://akka.io)
@@ -16,9 +16,12 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 - magenta: Gear had an exception and is restarted by the supervisor
 - black: Gear had 2 exceptions within 2 seconds (double click to revive)
 
+![Gear GUI](./GearGUI.png?raw=true)
+
 ### ...the parameters in the code:
 - GearGUI nOfGears (increase if you want to have more gears)
-- Gear failureLevel (increase if you want to have more exceptions)
+- Gear errorLevel (raise initial value here to have more exceptions or use Slider in GUI)
+- Gear sleepTime (raise initial value here to slow down simulation or use Slider in GUI)
 
 ## History
 ### Migration from Scala Actors to akka actors 1.3
@@ -33,13 +36,18 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 - Minor enhancements to the GUI
 
 ### Update to akka 2.2.3
-- change the gear actor behaviour with "akka become", so there is no need for a local var "speed" anymore
+- Change the gear actor behaviour with "akka become", so there is no need for a local var "speed" anymore
 - Minor enhancements: Removed ActorRefs in Messages
 - Added sbt and support for monitoring with Typesafe Console via sbt-atmos plug-in https://github.com/sbt/sbt-atmos
 
+### Update to akka 2.3.8 and Scala 2.11.4
+-  Set the ErrorLevel via Slider from GUI
+
 ```
 ./sbt
-atmos:run-main ch.clx.geargui.GearGUI
+> atmos:run-main ch.clx.geargui.GearGUI
+[info] Starting Atmos and Typesafe Console ...
+[info] Typesafe Console is available at http://localhost:9900
 ```
 
 ## Monitoring

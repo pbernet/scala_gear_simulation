@@ -8,7 +8,7 @@ import akka.actor.{Actor, ActorRef, Props, ActorSystem}
 
 object GearGUI extends SimpleSwingApplication {
 
-  //Set manuallyx if you want to have more Gears/Sliders
+  //Set manually if you want to have more Gears/Sliders
   val nOfGears = 20
 
   //Track the progress of the simulation
@@ -57,6 +57,16 @@ object GearGUI extends SimpleSwingApplication {
     min = 0; value = 150; max = 1000
   }
 
+  object errorLevelLabel extends Label {
+    text = "Error Level: low...high"
+  }
+
+  object errorLevel extends Slider {
+    min = 2
+    value = 4
+    max = 10
+  }
+
   val startMenuItem = new MenuItem(Action("Start") {
     startSimulation()
   })
@@ -69,7 +79,7 @@ object GearGUI extends SimpleSwingApplication {
 
   def top = new MainFrame {
 
-    title = "A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.10"
+    title = "A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.11.x"
     preferredSize = new java.awt.Dimension(1200, 500)
 
     menuBar = new MenuBar {
@@ -106,6 +116,8 @@ object GearGUI extends SimpleSwingApplication {
         contents += progressBar
         contents += sleepTimeLabel
         contents += sleepTime
+        contents += errorLevelLabel
+        contents += errorLevel
       }
 
       /**
@@ -143,6 +155,7 @@ object GearGUI extends SimpleSwingApplication {
     listenTo(startButton)
     listenTo(sabotageButton)
     listenTo(sleepTime.mouse.clicks)
+    listenTo(errorLevel.mouse.clicks)
     sliderCollection.foreach(s => listenTo(s.mouse.clicks))
     reactions += {
       case ButtonClicked(`startButton`) =>
@@ -159,9 +172,14 @@ object GearGUI extends SimpleSwingApplication {
         sabotageManual(slider.sliderId, slider.value)
 
       case MouseReleased(slider: Slider, _, _, _, _) =>
-        println("[GearGUI] SleepTime changed to: " + slider.value)
-        if (isSimulationRunning) gearController ! SetSleepTime(slider.value)
-
+        slider match {
+          case `sleepTime` =>
+            println("[GearGUI] SleepTime changed to: " + slider.value)
+            if (isSimulationRunning) gearController ! SetSleepTime(slider.value)
+          case `errorLevel` =>
+            println("[GearGUI] ErrorLevel changed to: " + slider.value)
+            if (isSimulationRunning) gearController ! SetErrorLevel(slider.value)
+        }
       case _ =>
       //println("AnyEvent: ")
     }
@@ -176,7 +194,7 @@ object GearGUI extends SimpleSwingApplication {
 
     guiActor = createReceiverActor
     gearController = system.actorOf(Props[GearController], name = "GearController")
-    gearController ! StartSync (guiActor)
+    gearController ! StartSync(guiActor)
 
     startButton.enabled = false
     startMenuItem.enabled = false

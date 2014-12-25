@@ -13,6 +13,7 @@ case class SyncGearRestart(syncSpeed: Int, oldSpeed : Int) extends Message
 case class Interrupt(toSpeed: Int) extends Message
 case object GetSpeed extends Message
 case class SetSleepTime(time: Long)
+case class SetErrorLevel(level: Double)
 
 //GearController API
 case class CurrentSpeed(ref : String, speed: Int) extends Message
