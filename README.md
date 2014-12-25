@@ -42,7 +42,7 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 
 ### Update to akka 2.3.8 and Scala 2.11.4
 -  Set the ErrorLevel via Slider from GUI
-
+-  Usage of Typesafe Console via via sbt-atmos plug-in
 ```
 ./sbt
 > atmos:run-main ch.clx.geargui.GearGUI
