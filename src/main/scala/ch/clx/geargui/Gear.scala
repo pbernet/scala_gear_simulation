@@ -15,8 +15,8 @@ import scala.language.postfixOps
 class Gear(id: Int, initSpeed: Int) extends Actor {
 
   //TODO These vars hold state which is changed from the outside...
-  var errorLevel: Double = 0.02 //raise to get more exceptions via Slider in GUI
-  var sleepTime: Long = 150 //raise to slow down simulation via Slider in GUI
+  var errorLevel: Double = 0.005 //raise to get more exceptions via Slider in GUI
+  var sleepTime: Long = 20 //raise to slow down simulation via Slider in GUI
 
   val controller = context.parent
 
