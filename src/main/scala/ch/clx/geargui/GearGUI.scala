@@ -260,8 +260,8 @@ object GearGUI extends SimpleSwingApplication {
   }
 
 
-  class ReceiverActor() extends Actor {
-    println("Initialize GUIActor")
+  class Receiver() extends Actor {
+    println("Initialize Receiver Actor")
 
     def receive = {
       case CurrentSpeedGUI(ref: String, speed: Int) =>
@@ -317,7 +317,7 @@ object GearGUI extends SimpleSwingApplication {
     }
   }
 
-  def createReceiverActor = system.actorOf(Props[ReceiverActor])
+  def createReceiverActor = system.actorOf(Props[Receiver])
 
 
   def initSliderCollection(allPaths: List[String]) {
