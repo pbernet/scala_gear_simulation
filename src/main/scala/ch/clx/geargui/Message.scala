@@ -35,4 +35,6 @@ case class CurrentSpeedGUI(ref : String, speed: Int) extends Message
 
 //Saboteur API
 case class SabotageRandom() extends Message
+case class SabotageRandomFrom(list: List[ActorRef]) extends Message
 case class SabotageManual(ref : String, toSpeed: Int) extends Message
+case class SabotageManualFrom(list: List[ActorRef], ref : String, toSpeed: Int) extends Message

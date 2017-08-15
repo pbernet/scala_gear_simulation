@@ -161,7 +161,7 @@ class GearController extends Actor {
       def revive(gear: ActorRef) = {
         // Can't restart an actor that has been terminated - create a new one instead
         // http://doc.akka.io/docs/akka/snapshot/general/supervision.html#supervision-restart
-        println("Try to revive gear with path: " + gear.path + " Terminated: " + gear.isTerminated)
+        println("Try to revive gear with path: " + gear.path)
         val originalID = gear.path.toString.split("/").last.replace("Gear", "").toInt
         val child = createGear(originalID)
 
@@ -182,11 +182,11 @@ class GearController extends Actor {
     }
 
     case SabotageRandom() => {
-      saboteur ! SabotageRandom()
+      saboteur ! SabotageRandomFrom(gearList)
     }
 
     case SabotageManual(ref, toSpeed) => {
-      saboteur ! SabotageManual(ref, toSpeed)
+      saboteur ! SabotageManualFrom(gearList, ref, toSpeed)
     }
 
     case t@Terminated(child) => {

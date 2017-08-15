@@ -9,7 +9,7 @@ $ cat .gitignore
 
 # Can also ignore all directories and files in a directory.
 tmp/**/* 
-target/*
+target/
 
 # Use wildcards as well
 *.iml
