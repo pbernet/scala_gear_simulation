@@ -42,9 +42,7 @@ class GearController extends Actor {
 
   var guiActor: ActorRef = null
 
-  def gearList = {
-    gearColl.toList
-  }
+  def gearList = gearColl.toList
 
   def resetGearCollection() {
     gearColl = ListBuffer[ActorRef]()
@@ -125,12 +123,12 @@ class GearController extends Actor {
     }
 
     case SetSleepTime(time) => {
-      gearList.map(_ ! SetSleepTime(time))
+      gearList.foreach(_ ! SetSleepTime(time))
     }
 
     case SetErrorLevel(level) => {
       println("[GearController] error Level: "  + level)
-      gearList.map(_ ! SetErrorLevel(level))
+      gearList.foreach(_ ! SetErrorLevel(level))
     }
 
     case ReportInterrupt => {
@@ -152,7 +150,7 @@ class GearController extends Actor {
     }
 
     case CleanUp => {
-      context.children foreach (context.stop(_))
+      context.children.foreach(context.stop(_))
       resetGearCollection()
     }
 
@@ -245,6 +243,4 @@ class GearController extends Actor {
     def rec(tg: ThreadGroup): Int = if (tg.getParent eq null) tg.activeCount else rec(tg.getParent)
     rec(Thread.currentThread.getThreadGroup)
   }
-
-
 }

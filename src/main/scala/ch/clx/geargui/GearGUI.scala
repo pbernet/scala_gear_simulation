@@ -9,7 +9,7 @@ import akka.actor.{Actor, ActorRef, Props, ActorSystem}
 object GearGUI extends SimpleSwingApplication {
 
   //Set manually if you want to have more Gears/Sliders
-  val nOfGears = 8
+  val nOfGears = 20
 
   //Track the progress of the simulation
   var nOfSynchGears = 0
@@ -126,7 +126,7 @@ object GearGUI extends SimpleSwingApplication {
        */
       val gearPanel = new FlowPanel {
         preferredSize = new java.awt.Dimension(600, 0)
-        for (i <- 0 to nOfGears - 1) {
+        for (i <- 0 until nOfGears) {
           object slider extends GearSlider {
             min = 0
             value = 0
