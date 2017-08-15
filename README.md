@@ -2,11 +2,18 @@ A gear simulation in Scala
 ========
 
 ## Introduction
-A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.11.x
+A simulation of synchronizing gears modeled with akka-actors and scala-swing in Scala 2.11.x
 
-## What this branch contains:
-- Usage of [akka Actors](http://akka.io)
-- [Fault Tolerance](http://doc.akka.io/docs/akka/snapshot/java/fault-tolerance.html) through Supervisor Strategies a(k)ka "Let it crash"
+Clone and run with:
+```
+mvn
+```
+
+## Concepts
+- Each _Gear_ is an akka Actor which is represented in the _GearGUI_ by a slider
+- The gears are supervised by the _GearController_ Actor
+- The _Receiver_ coordinates updates from the _GearController_ to the _GearGUI_
+
 
 ## What is the purpose of...
 ### ...the slider colors:
@@ -24,24 +31,14 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 - Gear sleepTime (raise initial value here to slow down simulation or use Slider in GUI)
 
 ## History
-### Migration from Scala Actors to akka actors 1.3
-- Forked pmeiclx/scala_gear_simulation
-- Change from scala.actors.Actor to akka.actor._
-- Change type of List / Map and dependencies to ActorRef
-- Change loop / react to receive
 
-### Update to akka 2.1.0 and Scala 2.10 (this branch)
-- Forked dhob/scala_gear_simulation
-- Changed akka implementation from 1.3 -> 2.0 -> 2.1 using the [akka migration guides](http://doc.akka.io/docs/akka/2.0.3/project/migration-guide-1.3.x-2.0.x.html)
-- Minor enhancements to the GUI
-
-### Update to akka 2.2.3
-- Change the gear actor behaviour with "akka become", so there is no need for a local var "speed" anymore
-- Minor enhancements: Removed ActorRefs in Messages
-- Added sbt and support for monitoring with Typesafe Console via sbt-atmos plug-in https://github.com/sbt/sbt-atmos
+### Update to akka 2.5.4 and Scala 2.11.11
+- Update pom.xml
+- Adjust the params in Gear for faster completion
 
 ### Update to akka 2.3.8 and Scala 2.11.4
 -  Set the ErrorLevel via Slider from GUI
+-  Run Application via sbt-atmos plug-in
 -  Usage of Typesafe Console via via sbt-atmos plug-in
 ```
 ./sbt
@@ -49,6 +46,17 @@ A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2
 [info] Starting Atmos and Typesafe Console ...
 [info] Typesafe Console is available at http://localhost:9900
 ```
+
+### Update to akka 2.2.3
+- Change the gear actor behaviour with "akka become", so there is no need for a local var "speed" anymore
+- Minor enhancements: Removed ActorRefs in Messages
+- Added sbt and support for monitoring with Typesafe Console via sbt-atmos plug-in https://github.com/sbt/sbt-atmos
+
+### Update to akka 2.1.0 and Scala 2.10 (this branch)
+- Forked from dhob/scala_gear_simulation
+- Changed akka implementation from 1.3 -> 2.0 -> 2.1 using the [akka migration guides](http://doc.akka.io/docs/akka/2.0.3/project/migration-guide-1.3.x-2.0.x.html)
+- [Fault Tolerance](http://doc.akka.io/docs/akka/snapshot/java/fault-tolerance.html) through Supervisor Strategies a(k)ka "Let it crash"
+- Minor enhancements to the GUI
 
 ## Monitoring
 - YourKit for thread activity
