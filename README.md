@@ -10,9 +10,11 @@ mvn
 ```
 
 ## Concepts
+![Alt text](concepts.jpg?raw=true "Concepts")
+
 - Each _Gear_ is an akka Actor which is represented in the _GearGUI_ by a slider
 - The gears are supervised by the _GearController_ Actor
-- The _Receiver_ coordinates updates from the _GearController_ to the _GearGUI_
+- The _Receiver_ Actor coordinates updates from the _GearController_ to the _GearGUI_
 
 
 ## What is the purpose of...
@@ -35,11 +37,12 @@ mvn
 ### Update to akka 2.5.4 and Scala 2.11.11
 - Update pom.xml
 - Adjust the params in Gear for faster completion
+- Add deprecated note for Typesafe Console
 
 ### Update to akka 2.3.8 and Scala 2.11.4
 -  Set the ErrorLevel via Slider from GUI
 -  Run Application via sbt-atmos plug-in
--  Usage of Typesafe Console via via sbt-atmos plug-in
+-  Usage of Typesafe Console (deprecated) via via sbt-atmos plug-in
 ```
 ./sbt
 > atmos:run-main ch.clx.geargui.GearGUI
