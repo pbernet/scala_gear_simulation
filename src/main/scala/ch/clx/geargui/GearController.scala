@@ -40,7 +40,7 @@ class GearController extends Actor {
 
   val saboteur = context.actorOf(Props(classOf[Saboteur]), name = "Saboteur")
 
-  var guiActor: ActorRef = null
+  var reciever: ActorRef = null
 
   def gearList = gearColl.toList
 
@@ -51,7 +51,7 @@ class GearController extends Actor {
   def init() {
     //http://doc.akka.io/docs/akka/snapshot/scala/futures.html
     implicit val timeout = Timeout(5 seconds)
-    val future = guiActor ? RequestNumberOfGears // enabled by the “ask” import
+    val future = reciever ? RequestNumberOfGears // enabled by the “ask” import
     val nOfGears = Await.result(future, timeout.duration).asInstanceOf[Int]
 
 
@@ -73,9 +73,9 @@ class GearController extends Actor {
   }
 
   def receive = {
-    case StartSync(theGUIActor) => {
+    case StartSync(aReciever) => {
       println("[Controller] Send commands for syncing to gears!")
-      guiActor =  theGUIActor
+      reciever =  aReciever
       if (gearColl.isEmpty) init()
 
       var speeds = new ListBuffer[Int]
@@ -89,10 +89,10 @@ class GearController extends Actor {
       })
 
       syncSpeed = (0 /: speeds)(_ + _) / speeds.length //Average over all gear speeds
-      guiActor ! SetCalculatedSyncSpeed(syncSpeed)
+      reciever ! SetCalculatedSyncSpeed(syncSpeed)
 
       println("[Controller] calculated syncSpeed: " + syncSpeed)
-      guiActor ! AllGears(gearList.map(_.path.toString))
+      reciever ! AllGears(gearList.map(_.path.toString))
       gearList.foreach(_ ! SyncGear(syncSpeed))
       println("[Controller] started all gears")
     }
@@ -102,15 +102,15 @@ class GearController extends Actor {
     }
     case crashed@Crashed(gearActor) => {
       //forward does the same as !, but will pass the original sender
-      guiActor forward crashed
+      reciever forward crashed
     }
     case ReceivedSpeed => {
       val gearRef = context.sender
       println("[Controller] Syncspeed received by a gear (" + gearRef + ")")
       syncGears += gearRef
 
-      guiActor ! ReceivedSpeedGUI(gearRef.path.toString)
-      guiActor ! Progress(syncGears.length)
+      reciever ! ReceivedSpeedGUI(gearRef.path.toString)
+      reciever ! Progress(syncGears.length)
 
       if (isSimulationFinished) benchmark()
     }
@@ -119,7 +119,7 @@ class GearController extends Actor {
       //println("[GearController] gear(" + gearId + ") currentSpeed: " + speed)
 
       stateMap += (ref -> speed) //overwrite key
-      guiActor ! CurrentSpeedGUI(ref, speed)
+      reciever ! CurrentSpeedGUI(ref, speed)
     }
 
     case SetSleepTime(time) => {
@@ -139,8 +139,8 @@ class GearController extends Actor {
             actor ! SyncGear(syncSpeed)
           }
 
-          guiActor ! GearProblem(actor.path.toString)
-          guiActor ! Progress(syncGears.length)
+          reciever ! GearProblem(actor.path.toString)
+          reciever ! Progress(syncGears.length)
         }
         case _ => ()
       }
@@ -190,7 +190,7 @@ class GearController extends Actor {
     case t@Terminated(child) => {
 
       println("Terminated received for child: " + child.path.toString + " Dead: " + t.getExistenceConfirmed())
-      guiActor ! GiveUp(child.path.toString)
+      reciever ! GiveUp(child.path.toString)
     }
 
     case _ => println("[Controller] No match :(")

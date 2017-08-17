@@ -23,7 +23,7 @@ object GearGUI extends SimpleSwingApplication {
   val system = ActorSystem("GearSystem")
 
   var gearController: ActorRef = null
-  var guiActor: ActorRef = null
+  var reciever: ActorRef = null
 
 
   /**
@@ -192,9 +192,9 @@ object GearGUI extends SimpleSwingApplication {
 
     isSimulationRunning = true
 
-    guiActor = createReceiverActor
+    reciever = createReceiverActor
     gearController = system.actorOf(Props[GearController], name = "GearController")
-    gearController ! StartSync(guiActor)
+    gearController ! StartSync(reciever)
 
     startButton.enabled = false
     startMenuItem.enabled = false
@@ -207,7 +207,7 @@ object GearGUI extends SimpleSwingApplication {
       gearController ! CleanUp
       system.stop(gearController)
       gearController = null
-      system.stop(guiActor)
+      system.stop(reciever)
     }
 
     progressBar.value = 0

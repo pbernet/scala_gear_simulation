@@ -5,7 +5,7 @@ import akka.actor._
 abstract class Message
 
 //Gear API
-case class StartSync(guiActor : ActorRef) extends Message
+case class StartSync(reciever : ActorRef) extends Message
 case class ReSync(gearActor : ActorRef) extends Message
 case class Crashed(gearActor : ActorRef) extends Message
 case class SyncGear(syncSpeed: Int) extends Message
