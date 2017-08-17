@@ -10,7 +10,7 @@ mvn
 ```
 
 ## Concepts
-![Alt text](concepts.jpg?raw=true "Concepts")
+![Condepts](./concepts.jpg?raw=true "Concepts")
 
 - Each _Gear_ is an akka Actor which is represented in the _GearGUI_ by a slider
 - The gears are supervised by the _GearController_ Actor
@@ -25,7 +25,7 @@ mvn
 - magenta: Gear had an exception and is restarted by the supervisor
 - black: Gear had 2 exceptions within 2 seconds (double click to revive)
 
-![Gear GUI](./GearGUI.png?raw=true)
+![Gear GUI](./GearGUI.png?raw=true "GearGUI")
 
 ### ...the parameters in the code:
 - GearGUI nOfGears (increase if you want to have more gears)
