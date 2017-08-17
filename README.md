@@ -10,7 +10,7 @@ mvn
 ```
 
 ## Concepts
-![Condepts](./concepts.jpg?raw=true "Concepts")
+![Concepts](./concepts.JPG?raw=true "Concepts")
 
 - Each _Gear_ is an akka Actor which is represented in the _GearGUI_ by a slider
 - The gears are supervised by the _GearController_ Actor
