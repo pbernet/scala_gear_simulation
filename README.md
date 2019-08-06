@@ -1,4 +1,4 @@
-A gear simulation in Scala
+Synchronizing gear simulation in Scala
 ========
 
 ## Introduction
@@ -12,7 +12,7 @@ mvn
 ## Concepts
 ![Concepts](./concepts.JPG?raw=true "Concepts")
 
-- Each _Gear_ is an akka Actor which is represented in the _GearGUI_ by a slider
+- Each _Gear_ is an Akka Actor which is represented in the _GearGUI_ by a slider
 - The gears are supervised by the _GearController_ Actor
 - The _Receiver_ Actor coordinates updates from the _GearController_ to the _GearGUI_
 
