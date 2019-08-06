@@ -2,7 +2,7 @@ A gear simulation in Scala
 ========
 
 ## Introduction
-A simulation of synchronizing gears modeled with akka-actors and scala-swing in Scala 2.11.x
+A simulation of synchronizing gears modeled with akka-actors and scala-swing
 
 Clone and run with:
 ```
@@ -33,6 +33,10 @@ mvn
 - Gear sleepTime (raise initial value here to slow down simulation or use Slider in GUI)
 
 ## History
+
+### Update to akka 2.5.23 and Scala 2.12.9
+- Update pom.xml
+- Remove obsolete stuff
 
 ### Update to akka 2.5.4 and Scala 2.11.11
 - Update pom.xml

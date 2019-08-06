@@ -79,7 +79,7 @@ object GearGUI extends SimpleSwingApplication {
 
   def top = new MainFrame {
 
-    title = "A simulation of synchronizing gears using akka-actors and scala-swing in Scala 2.11.x"
+    title = "A simulation of synchronizing gears using akka-actors and scala-swing"
     preferredSize = new java.awt.Dimension(1200, 500)
 
     menuBar = new MenuBar {
