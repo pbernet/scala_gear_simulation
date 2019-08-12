@@ -17,13 +17,13 @@ object GearGUI extends SimpleSwingApplication {
   var isSimulationRunning = false
 
   //Serves as a shadow collection to handle the GUI-Eventmatching
-  var sliderCollection = new ListBuffer[GearSlider]
+  var sliders = new ListBuffer[GearSlider]
 
   //all config params are in application.conf
   val system = ActorSystem("GearSystem")
 
   var gearController: ActorRef = null
-  var reciever: ActorRef = null
+  var receiver: ActorRef = null
 
 
   /**
@@ -136,7 +136,7 @@ object GearGUI extends SimpleSwingApplication {
             opaque = true
           }
           contents += slider
-          sliderCollection += slider
+          sliders += slider
         }
       }
 
@@ -156,7 +156,7 @@ object GearGUI extends SimpleSwingApplication {
     listenTo(sabotageButton)
     listenTo(sleepTime.mouse.clicks)
     listenTo(errorLevel.mouse.clicks)
-    sliderCollection.foreach(s => listenTo(s.mouse.clicks))
+    sliders.foreach(s => listenTo(s.mouse.clicks))
     reactions += {
       case ButtonClicked(`startButton`) =>
         println("[GearGUI] Startbutton")
@@ -192,9 +192,9 @@ object GearGUI extends SimpleSwingApplication {
 
     isSimulationRunning = true
 
-    reciever = createReceiverActor
+    receiver = createReceiverActor
     gearController = system.actorOf(Props[GearController], name = "GearController")
-    gearController ! StartSync(reciever)
+    gearController ! StartSync(receiver)
 
     startButton.enabled = false
     startMenuItem.enabled = false
@@ -207,7 +207,7 @@ object GearGUI extends SimpleSwingApplication {
       gearController ! CleanUp
       system.stop(gearController)
       gearController = null
-      system.stop(reciever)
+      system.stop(receiver)
     }
 
     progressBar.value = 0
@@ -321,8 +321,8 @@ object GearGUI extends SimpleSwingApplication {
 
 
   def initSliderCollection(allPaths: List[String]) {
-    val zippedCol = sliderCollection zip allPaths
-    sliderCollection = zippedCol.collect {
+    val zippedCol = sliders zip allPaths
+    sliders = zippedCol.collect {
       case (gearSlider, path) => {
         gearSlider.sliderId = path
         gearSlider
@@ -331,7 +331,7 @@ object GearGUI extends SimpleSwingApplication {
   }
 
   def findSlider(path: String) = {
-    sliderCollection.find(_.sliderId == path).get
+    sliders.find(_.sliderId == path).get
   }
 }
 

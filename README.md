@@ -13,7 +13,7 @@ mvn
 ![Concepts](./concepts.JPG?raw=true "Concepts")
 
 - Each _Gear_ is an Akka Actor which is represented in the _GearGUI_ by a slider
-- The gears are supervised by the _GearController_ Actor
+- The gears are supervised by the _GearController_ Actor which coordinates and keeps the state
 - The _Receiver_ Actor coordinates updates from the _GearController_ to the _GearGUI_
 
 
@@ -34,9 +34,9 @@ mvn
 
 ## History
 
-### Update to akka 2.5.23 and Scala 2.12.9
-- Update pom.xml
-- Remove obsolete stuff
+### Update to akka 2.5.23 and Scala 2.13.0
+- Update pom.xml, note that scala-swing is now maintained by the community 
+- Remove obsolete stuff and minor refactorings
 
 ### Update to akka 2.5.4 and Scala 2.11.11
 - Update pom.xml
