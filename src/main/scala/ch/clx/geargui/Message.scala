@@ -2,7 +2,7 @@ package ch.clx.geargui
 
 import akka.actor._
 
-abstract class Message
+trait Message
 
 //Gear API
 case class StartSync(reciever : ActorRef) extends Message
