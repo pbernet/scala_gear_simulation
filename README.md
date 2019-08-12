@@ -8,6 +8,7 @@ Clone and run with:
 ```
 mvn
 ```
+Or run the main class _GearGUI_ from the IDE.
 
 ## Concepts
 ![Concepts](./concepts.JPG?raw=true "Concepts")
